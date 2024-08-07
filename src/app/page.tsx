@@ -3,8 +3,8 @@ import fix from "/public/fix.png"
 
 export default function Home() {
   return (
-    <main className="bg-[url('/trees.png')] bg-cover bg-center">
-      <div className="flex justify-around p-10">
+    <main className="bg-[url('/trees.png')] bg-cover bg-center  ">
+      <div className="flex justify-around pt-10 ">
         <h1 className="font-syncopate font-bold text-4xl">
           TREASURE HUNTS
         </h1>
@@ -17,8 +17,8 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <div className="flex justify-center h-auto">
-        <div className="w-1/4 ml-20 mt-40 justify-center">
+      <div className="flex justify-center h-auto  ">
+        <div className="w-1/4 ml-20 mt-20 justify-center max-w-lg">
           <h1 className="text-7xl text-white">
             Your Jorney to Hidden Treasures starts Here!
           </h1>
@@ -33,7 +33,7 @@ export default function Home() {
           </h2>
         </div>
         <Image
-          className="mb-20 mt-20 transform scale-90"
+          className="mb-20 transform scale-75"
           src={fix} // Path to your image
           alt="rising hands and fall"
         />

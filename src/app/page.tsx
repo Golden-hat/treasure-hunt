@@ -2,46 +2,48 @@ import Image from "next/image";
 import fix from "/public/fix.png";
 import phone from "/public/phone.png";
 import QR from "/public/QR.png";
+import spain from "/public/earth.png";
 
 export default function Home() {
   return (
-    <main className="bg-[url('/trees.png')] bg-cover bg-center  ">
-      <div className="flex justify-around pt-10 ">
-        <h1 className="font-syncopate font-bold text-4xl">
-          TREASURE HUNTS
-        </h1>
-        <div>
-          <button className="bg-transparent border-2 border-black text-black rounded-2xl mr-5 px-3 py-2 hover:bg-black hover:text-white transition duration-300">
-            Log In
-          </button>
-          <button className="bg-transparent border-2 border-black text-black rounded-2xl px-3 py-2 hover:bg-black hover:text-white transition duration-300">
-            Sign Out
-          </button>
-        </div>
-      </div>
-      <div className="flex justify-center h-auto mt-16 mb-10">
-        <div className="w-1/4 ml-24 justify-center max-w-lg">
-          <h1 className="text-7xl text-white">
-            Your Jorney to Hidden Treasures starts Here!
+    <main>
+      <div className="bg-[url('/trees.png')] bg-cover bg-top pb-24 bg-blend-overlay">
+        <div className="flex justify-around pt-10 ">
+          <h1 className="font-syncopate font-bold text-4xl ">
+            TREASURE HUNTS
           </h1>
-          <h2 className="text-white text-xl mt-10 align-center">
-            Uncover Adventure, One Clue at a Time! Solve Clues, Unlock Secrets, and Discover Hidden Treasures!  Create treasure hunts and share your experiences!
-          </h2>
-          <button className="text-3xl mt-10 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
-            Launch Application
-          </button>
-          <h2 className="mt-2 text-white">
-            If you haven't logged in yet, this button will launch the application with a guest account.
-          </h2>
+          <div>
+            <button className="bg-transparent border-2 border-black text-black rounded-2xl mr-5 px-3 py-2 hover:bg-black hover:text-white transition duration-300">
+              Log In
+            </button>
+            <button className="bg-transparent border-2 border-black text-black rounded-2xl px-3 py-2 hover:bg-black hover:text-white transition duration-300">
+              Sign Out
+            </button>
+          </div>
         </div>
-        <Image
-          className="transform scale-90"
-          src={fix} // Path to your image
-          alt="rising hands and fall"
-          height={650}
-        />
+        <div className="flex justify-center h-auto mt-28">
+          <div className="w-full xl:w-1/4 justify-center max-w-lg">
+            <h1 className="text-7xl text-white">
+              Your Journey to Hidden Treasures Starts Here!
+            </h1>
+            <h2 className="text-white text-3xl mt-10 align-center">
+              Uncover Adventure, One Clue at a Time! Solve Clues, Unlock Secrets, and Discover Hidden Treasures! Create treasure hunts and share your experiences!
+            </h2>
+            <button className="text-3xl mt-24 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
+              Launch Application
+            </button>
+            <h2 className="mt-6 w-3/4 text-md text-white">
+              If you haven't logged in yet, this button will launch the application with a guest account.
+            </h2>
+          </div>
+          <Image
+            className="hidden xl:block transform scale-90"
+            src={fix} // Replace 'fix' with the actual image path or import
+            alt="rising hands and fall"
+          />
+        </div>
       </div>
-      <div className=" bg-[#EEFFE0] flex text-center items-center justify-center mb-60 pb-20 pt-20">
+      <div className=" bg-gradient-to-b from-[#EEFFE0] via-[#EEFFE0] via-90% to-black flex text-center items-center justify-center pb-60 pt-40">
         <Image
           className="transform scale-90 mr-12"
           src={phone} // Path to your image
@@ -60,6 +62,16 @@ export default function Home() {
             src={QR} // Path to your image
             alt="rising hands and fall"
           />
+        </div>
+      </div>
+      <div className="bg-[url('/earth.png')] bg-cover bg-top flex justify-center pt-40 pb-40 mb-20">
+        <div className="justify-center max-w-4xl">
+          <h1 className="text-8xl mb-10 text-white text-center">
+            The globe is your playground. Let the hunt begin!
+          </h1>
+          <h2 className="text-white text-3xl text-center align-center">
+            Easily use our integrated Google Maps service to drag and drop the checkpoints that comprise your hunts
+          </h2>
         </div>
       </div>
     </main>

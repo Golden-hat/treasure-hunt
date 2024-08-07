@@ -1,5 +1,7 @@
 import Image from "next/image";
-import fix from "/public/fix.png"
+import fix from "/public/fix.png";
+import phone from "/public/phone.png";
+import QR from "/public/QR.png";
 
 export default function Home() {
   return (
@@ -17,8 +19,8 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <div className="flex justify-center h-auto  ">
-        <div className="w-1/4 ml-20 mt-20 justify-center max-w-lg">
+      <div className="flex justify-center h-auto mt-16 mb-10">
+        <div className="w-1/4 ml-24 justify-center max-w-lg">
           <h1 className="text-7xl text-white">
             Your Jorney to Hidden Treasures starts Here!
           </h1>
@@ -33,10 +35,32 @@ export default function Home() {
           </h2>
         </div>
         <Image
-          className="mb-20 transform scale-75"
+          className="transform scale-90"
           src={fix} // Path to your image
           alt="rising hands and fall"
+          height={650}
         />
+      </div>
+      <div className=" bg-[#EEFFE0] flex text-center items-center justify-center mb-60 pb-20 pt-20">
+        <Image
+          className="transform scale-90 mr-12"
+          src={phone} // Path to your image
+          alt="rising hands and fall"
+          height={650}
+        />
+        <div className="max-w-lg">
+          <h1 className="text-6xl text-black">
+            Plan tracks, add mini-grames and share your routes with everyone
+          </h1>
+          <h2 className="text-black text-xl text-center mt-10 align-center">
+            All in one place... with the help of Quickscan codes
+          </h2>
+          <Image
+            className="mt-12 transform scale-90"
+            src={QR} // Path to your image
+            alt="rising hands and fall"
+          />
+        </div>
       </div>
     </main>
   );

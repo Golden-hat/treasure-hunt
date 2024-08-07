@@ -18,7 +18,7 @@ export default function Home() {
         </div>
       </div>
       <div className="flex justify-center h-auto">
-        <div className="w-1/4 mt-40 justify-center">
+        <div className="w-1/4 ml-20 mt-40 justify-center">
           <h1 className="text-7xl text-white">
             Your Jorney to Hidden Treasures starts Here!
           </h1>

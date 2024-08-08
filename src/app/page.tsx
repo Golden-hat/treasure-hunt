@@ -19,7 +19,7 @@ export default function Home() {
               Log In
             </button>
             <button className="bg-transparent border-2 border-black text-black rounded-2xl px-3 py-2 hover:bg-black hover:text-white transition duration-300">
-              Sign Out
+              Sign In
             </button>
           </div>
         </div>

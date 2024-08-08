@@ -2,12 +2,14 @@ import Image from "next/image";
 import fix from "/public/fix.png";
 import phone from "/public/phone.png";
 import QR from "/public/QR.png";
-import spain from "/public/earth.png";
+import dotted from "/public/dotted.png";
+import inter from "/public/interface.png";
+import pod from "/public/podium.png";
 
 export default function Home() {
   return (
     <main>
-      <div className="bg-[url('/trees.png')] bg-cover bg-top pb-24 bg-blend-overlay">
+      <div className="bg-tree-pattern bg-cover bg-top pb-24 bg-blend-overlay">
         <div className="flex justify-around pt-10 ">
           <h1 className="font-syncopate font-bold text-4xl ">
             TREASURE HUNTS
@@ -39,15 +41,15 @@ export default function Home() {
           <Image
             className="hidden xl:block transform scale-90"
             src={fix} // Replace 'fix' with the actual image path or import
-            alt="rising hands and fall"
+            alt="example"
           />
         </div>
       </div>
-      <div className=" bg-gradient-to-b from-[#EEFFE0] via-[#EEFFE0] via-90% to-black flex text-center items-center justify-center pb-60 pt-40">
+      <div className=" bg-gradient-to-b from-[#EEFFE0] via-[#EEFFE0] via-90% to-black flex text-center items-center justify-center pb-80 pt-60">
         <Image
           className="transform scale-90 mr-12"
           src={phone} // Path to your image
-          alt="rising hands and fall"
+          alt="example"
           height={650}
         />
         <div className="max-w-lg">
@@ -58,19 +60,56 @@ export default function Home() {
             All in one place... with the help of Quickscan codes
           </h2>
           <Image
-            className="mt-12 transform scale-90"
+            className="mt-12 transform scale-90 bg-blend-color-[#eeffe0]"
             src={QR} // Path to your image
-            alt="rising hands and fall"
+            alt="example"
           />
         </div>
       </div>
-      <div className="bg-[url('/earth.png')] bg-cover bg-top flex justify-center pt-40 pb-40 mb-20">
+      <div className="bg-hero-pattern bg-cover bg-top flex justify-center pt-80 pb-80">
         <div className="justify-center max-w-4xl">
           <h1 className="text-8xl mb-10 text-white text-center">
             The globe is your playground. Let the hunt begin!
           </h1>
-          <h2 className="text-white text-3xl text-center align-center">
+          <h2 className="text-white text-3xl mb-40 text-center align-center">
             Easily use our integrated Google Maps service to drag and drop the checkpoints that comprise your hunts
+          </h2>
+        </div>
+      </div>
+      <div className="relative bg-mirror-pattern bg-cover bg-top flex justify-center pt-80 pb-96">
+        <div className="justify-center max-w-7xl">
+          <h1 className="text-8xl mb-10 text-white text-center">
+            You make the rules of the game
+          </h1>
+          <div className="flex justify-around">
+            <Image
+              className="m-auto mt-20 mr-40 -rotate-2"
+              src={inter} // Path to your image
+              alt="example"
+            />
+            <h2 className="text-white text-4xl mt-24 rotate-2 text-center">
+              The tracks offer difficulty options such as time-gating, requirement fulfilling...<br></br> <br></br>
+              and things can be even made harder with well thought minigames!
+            </h2>
+          </div>
+          <h2 className="text-white text-3xl mt-20 text-center align-center">
+            Each creator decides the difficulty of their tracks. Limitless possibilities to create the most challenging of hunts.
+          </h2>
+        </div>
+      </div>
+      <div className=" bg-gradient-to-b from-[#EEFFE0] via-[#EEFFE0] via-95% to-black flex text-center items-center justify-center pb-80 pt-20">
+        <div className="max-w-6xl flex flex-col text-center">
+          <h1 className="text-7xl text-black">
+            Challenge your friends and improve your score on your favorite hunts!
+          </h1>
+          <Image
+            className="m-auto mt-20 mr-40 w-3/4"
+            src={pod} // Path to your image
+            alt="example"
+          />
+          <h2 className="text-black text-3xl mt-20 text-center align-center">
+            A scoreboard system keeps track of the best completion times of each hunt.
+            So that the rest may know you’re the best hunter out there!
           </h2>
         </div>
       </div>

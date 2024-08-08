@@ -89,7 +89,7 @@ export default function Home() {
             />
             <h2 className="text-white text-4xl mt-24 rotate-2 text-center">
               The tracks offer difficulty options such as time-gating, requirement fulfilling...<br></br> <br></br>
-              and things can be even made harder with well thought minigames!
+              and things can be even made harder with well thought-out minigames!
             </h2>
           </div>
           <h2 className="text-white text-3xl mt-20 text-center align-center">

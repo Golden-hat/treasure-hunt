@@ -9,7 +9,7 @@ import pod from "/public/podium.png";
 export default function Home() {
   return (
     <main>
-      <div className="bg-tree-pattern bg-cover bg-top pb-24 bg-blend-overlay">
+      <div className="bg-tree-pattern bg-cover bg-top pb-40 bg-blend-overlay">
         <div className="flex justify-around pt-10 ">
           <h1 className="font-syncopate font-bold text-4xl ">
             TREASURE HUNTS

@@ -10,9 +10,9 @@ export default function Home() {
   return (
     <main>
       <div className="bg-tree-pattern bg-cover bg-top pb-40 bg-blend-overlay">
-        <div className="flex justify-around pt-10 ">
+        <div className="flex justify-around pt-10">
           <h1 className="font-syncopate font-bold text-4xl ">
-            TREASURE HUNTS
+            Treasure Hunts
           </h1>
           <div>
             <button className="bg-transparent border-2 border-black text-black rounded-2xl mr-5 px-3 py-2 hover:bg-black hover:text-white transition duration-300">
@@ -35,7 +35,7 @@ export default function Home() {
               Launch Application
             </button>
             <h2 className="mt-6 w-3/4 text-md text-white">
-              If you haven't logged in yet, this button will launch the application with a guest account.
+              If you haven't logged in yet, you will be redirected to the log in.
             </h2>
           </div>
           <Image
@@ -45,7 +45,8 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className=" bg-gradient-to-b from-[#EEFFE0] via-[#EEFFE0] via-90% to-black flex text-center items-center justify-center pb-80 pt-60">
+
+      <div className=" bg-gradient-to-b from-[#EEFFE0] via-[#EEFFE0] via-90% to-black sm:flex text-center items-center justify-center pb-80 pt-60">
         <Image
           className="transform scale-90 mr-12"
           src={phone} // Path to your image
@@ -53,7 +54,7 @@ export default function Home() {
           height={650}
         />
         <div className="max-w-lg">
-          <h1 className="text-6xl text-black">
+          <h1 className="text-6xl text-black ">
             Plan tracks, add mini-grames and share your routes with everyone
           </h1>
           <h2 className="text-black text-xl text-center mt-10 align-center">
@@ -66,6 +67,7 @@ export default function Home() {
           />
         </div>
       </div>
+
       <div className="bg-hero-pattern bg-cover bg-top flex justify-center pt-80 pb-80">
         <div className="justify-center max-w-4xl">
           <h1 className="text-8xl mb-10 text-white text-center">
@@ -76,6 +78,7 @@ export default function Home() {
           </h2>
         </div>
       </div>
+
       <div className="relative bg-mirror-pattern bg-cover bg-top flex justify-center pt-80 pb-96">
         <div className="justify-center max-w-7xl">
           <h1 className="text-8xl mb-10 text-white text-center">
@@ -87,7 +90,7 @@ export default function Home() {
               src={inter} // Path to your image
               alt="example"
             />
-            <h2 className="text-white text-4xl mt-24 rotate-2 text-center">
+            <h2 className="text-white text-4xl mt-24 rotate-2 text-center hidden xl:block">
               The tracks offer difficulty options such as time-gating, requirement fulfilling...<br></br> <br></br>
               and things can be even made harder with well thought-out minigames!
             </h2>
@@ -97,19 +100,20 @@ export default function Home() {
           </h2>
         </div>
       </div>
+
       <div className=" bg-gradient-to-b from-[#EEFFE0] via-[#EEFFE0] via-95% to-black flex text-center items-center justify-center pb-80 pt-20">
         <div className="max-w-6xl flex flex-col text-center">
           <h1 className="text-7xl text-black">
             Challenge your friends and improve your score on your favorite hunts!
           </h1>
           <Image
-            className="m-auto mt-20 mr-40 w-3/4"
+            className="m-auto mt-20 w-3/4"
             src={pod} // Path to your image
             alt="example"
           />
           <h2 className="text-black text-3xl mt-20 text-center align-center">
             A scoreboard system keeps track of the best completion times of each hunt.
-            So that the rest may know you’re the best hunter out there!
+            So that the rest may know you're the best hunter out there!
           </h2>
         </div>
       </div>

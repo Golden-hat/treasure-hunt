@@ -7,11 +7,11 @@ import inter from "/public/interface.png";
 import pod from "/public/podium.png";
 import Link from "next/link";
 
-export default function Home() {
+export default function Login() {
   return (
     <main className="bg-tree-pattern bg-cover bg-top w-full h-screen">
       <div className="flex items-center">
-        <form className="flex flex-col bg-white p-14 pb-12 pl-40 pr-40 min-w-[50vw] h-screen">
+        <form className="flex flex-col align-center justify-center bg-white p-14 pb-12 pl-40 pr-40 min-w-[50vw] h-screen">
 
         <div className="flex justify-between ">
           <h1 className="font-syncopate font-bold text-4xl pt-1">
@@ -23,19 +23,17 @@ export default function Home() {
             </button>
           </div>
         </div>
-
-          <h1 className="text-6xl mb-2 pt-14">
+        <div className="flex flex-col mt-14 border-2 bg-white border-black p-10 shadow-2xl rounded-2xl">
+        <h1 className="text-5xl mb-2">
             Log in:
           </h1>
-          <h2 className="text-xl italic mb-10">
+          <h2 className="text-xl italic mb-5">
             Welcome back, hunter.
           </h2>
   
           <label>E-mail:</label>
           <input type="text" className="border border-black rounded p-1 mb-2" />
-          <div className="flex justify-between">
-            <label>Password:</label>
-          </div>
+          <label>Password:</label>
           <input type="text" className="border border-black rounded p-1 mb-2" />
           <div className="flex">
               <input type="checkbox" className="p"></input>
@@ -51,6 +49,7 @@ export default function Home() {
               Don't have an account yet?<br />
               Sign Up!
             </h1>
+          </div>
           </div>
         </form>
       </div>

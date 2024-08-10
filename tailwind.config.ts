@@ -13,11 +13,11 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         'hero-pattern':
-          "linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 75%, rgba(238,	255, 224, 1) 100%), url('/earth.png')",
+          "linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 95%, rgba(238,	255, 224, 1) 100%), url('/earth.png')",
         'tree-pattern':
           "linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 80%, rgba(238,	255, 224, 1) 100% ), url('/trees.png')",
         'mirror-pattern':
-          "linear-gradient(to top, rgba(238,	255, 224, 1), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 75%, rgba(238,	255, 224, 1) 100% ), url('/mirror.png')", 
+          "linear-gradient(to bottom, rgba(238,	255, 224, 1) 10%, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 50%, rgba(238,	255, 224, 1) 100% ), url('/mirror.png')", 
       },
       fontFamily: {
         syncopate: ['Syncopate', 'sans-serif'],

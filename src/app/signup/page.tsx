@@ -11,7 +11,7 @@ export default function Signup() {
   return (
     <main className="bg-tree-pattern bg-cover bg-top w-full h-screen">
       <div className="flex items-center">
-        <form className="flex flex-col align-center justify-center bg-white p-14 pb-12 pl-40 pr-40 min-w-[50vw] h-screen">
+        <form className="flex flex-col align-center justify-center bg-white p-14 pb-12 2xl:pl-40 2xl:pr-40 min-w-[50vw] h-screen">
 
           <div className="flex justify-between ">
             <h1 className="font-syncopate font-bold text-4xl pt-1">

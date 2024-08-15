@@ -14,7 +14,7 @@ export default function Signup() {
         <form className="flex flex-col align-center justify-center bg-white p-14 pb-12 2xl:pl-40 2xl:pr-40 min-w-[50vw] h-screen">
 
           <div className="flex justify-between ">
-            <h1 className="font-syncopate font-bold text-4xl pt-1">
+            <h1 className="font-bold text-4xl pt-1">
               Treasure Hunts
             </h1>
             <div>

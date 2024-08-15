@@ -19,9 +19,6 @@ const config: Config = {
         'mirror-pattern':
           "linear-gradient(to bottom, rgba(238,	255, 224, 1) 10%, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 50%, rgba(238,	255, 224, 1) 100% ), url('/mirror.png')", 
       },
-      fontFamily: {
-        syncopate: ['Syncopate', 'sans-serif'],
-      },
     },
   },
   plugins: [],

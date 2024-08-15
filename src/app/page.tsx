@@ -11,10 +11,10 @@ export default function Home() {
   return (
     <main className="bg-tree-pattern bg-cover bg-top 2xl:flex w-full h-screen">
 
-      <div className="flex flex-col 2xl:align-center 2xl:justify-center bg-white p-14 xl:pr-40 xl:pl-40 pb-12 2xl:w-[50vw] 2xl:h-auto h-[40rem]">
+      <div className="flex flex-col 2xl:align-center 2xl:justify-center bg-white p-14 xl:pr-40 xl:pl-40 pb-12 2xl:w-[50vw] 2xl:h-auto h-fit">
 
         <div className="flex justify-between">
-          <h1 className="font-syncopate font-bold 2xl:text-4xl text-xl 2xl:pt-1">
+          <h1 className="2xl:text-4xl text-xl 2xl:pt-1 font-extrabold">
             Treasure Hunts
           </h1>
           <div>
@@ -28,7 +28,7 @@ export default function Home() {
         </div>
       
         <div className="flex flex-col align-center justify-center">
-          <h1 className="xl:text-6xl text-5xl mt-16 text-black 2xl:max-w-none max-w-3xl">
+          <h1 className="xl:text-6xl text-5xl mt-16 text-black 2xl:max-w-none max-w-3xl font-bold">
             Your Journey to Hidden Treasures Starts Here!
           </h1>
           <h2 className="text-black xl:text-2xl text-xl mt-10 align-center 2xl:max-w-none max-w-3xl">
@@ -37,7 +37,7 @@ export default function Home() {
           <button className="text-3xl w-fit mt-[5vw] bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
             Launch Application
           </button>
-          <h2 className="mt-3xl mt-4 w-3/4 xl:text-xl text-black">
+          <h2 className="mt-3xl mt-4 w-3/4 xl:text-md text-black font-light italic">
             If you haven't logged in yet, you will be redirected to the log in.
           </h2>
         </div>
@@ -54,7 +54,7 @@ export default function Home() {
               alt="example"
             />
             <div className=" max-w-lg flex flex-col align-center justify-center">
-              <h1 className="2xl:text-5xl text-4xl text-center text-black mt-4">
+              <h1 className="2xl:text-5xl text-4xl text-center text-black mt-4 font-bold">
                 Plan tracks, add mini-games and share your routes with everyone
               </h1>
               <h2 className="text-black text-xl text-center mt-10 align-center">
@@ -70,8 +70,8 @@ export default function Home() {
         </div>
 
         <div className="flex 2xl:pb-0 justify-center 2xl:pr-20 2xl:pl-20 2xl:pt-20 2xl:m-0 m-10">
-          <div className="2xl:rotate-1 border-2 bg-white border-black p-10 shadow-2xl rounded-2xl max-w-2xl">
-            <h1 className="2xl:text-7xl text-4xl mb-10 text-black text-center">
+          <div className="2xl:rotate-1 border-2 bg-white border-black p-10 shadow-2xl rounded-2xl max-w-2xl ">
+            <h1 className="2xl:text-6xl text-4xl mb-10 text-black text-center font-bold">
               You make the rules of the game
             </h1>
             <div className="flex 2xl:flex-row flex-col justify-around">
@@ -93,15 +93,15 @@ export default function Home() {
 
         <div className="flex 2xl:pb-0 justify-center 2xl:pr-20 2xl:pl-20 2xl:pt-20 2xl:m-0 m-10">
           <div className=" -rotate-1 border-2 bg-white border-black p-10 shadow-2xl rounded-2xl max-w-2xl flex flex-col text-center">
-            <h1 className="2xl:text-5xl text-3xl text-black">
+            <h1 className="2xl:text-4xl text-3xl text-black font-bold">
               Challenge your friends and improve your score on your favorite hunts!
             </h1>
             <Image
-              className="m-auto 2xl:mb-0 mt-10"
+              className="m-auto w-3/4 2xl:mb-0 mt-10"
               src={pod} // Path to your image
               alt="example"
             />
-            <h2 className="text-black 2xl:text-2xl text-xl 2xl:mt-20 mt-10 text-center align-center">
+            <h2 className="text-black 2xl:text-2xl text-xl mt-10 text-center align-center">
               A scoreboard system keeps track of the best completion times of each hunt.
               So that the rest may know you're the best hunter out there!
             </h2>
@@ -110,7 +110,7 @@ export default function Home() {
 
         <div className="flex 2xl:pb-0 justify-center 2xl:pr-20 2xl:pl-20 2xl:pt-20 2xl:m-0 m-10">
           <div className="rotate-1 border-2 bg-white border-black p-10 shadow-2xl rounded-2xl justify-center mb-32 max-w-2xl">
-            <h1 className="text-5xl mt-6 text-black text-center">
+            <h1 className="text-5xl mt-6 text-black text-center font-bold mb-5">
               The globe is your playground. Let the hunt begin!
             </h1>
             <Image
@@ -118,7 +118,7 @@ export default function Home() {
               src={earth} // Path to your image
               alt="example"
             />
-            <h2 className="text-black text-2xl text-center align-center">
+            <h2 className="text-black text-2xl text-center align-center mt-5">
               Easily use our integrated Google Maps service to drag and drop the checkpoints that comprise your hunts
             </h2>
           </div>

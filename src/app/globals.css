@@ -2,19 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* styles/globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap');
+/* globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@100;200;300;400;500;600;700&display=swap');
 
-body {
-  font-family: 'Syncopate', sans-serif;
-  overflow-x: hidden;
-}
-
-body {
-  font-family: 'Rufina', serif;
-}
-
-/* You can also apply the font to specific elements if needed */
-h1, h2, h3, p, input, label, button{
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+h1 h2 h3 p input label button{
+  font-family: "Archivo", sans-serif;
 }

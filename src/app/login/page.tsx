@@ -1,15 +1,47 @@
-import Image from "next/image";
-import fix from "/public/fix.png";
-import phone from "/public/phone.png";
-import QR from "/public/QR.png";
-import dotted from "/public/dotted.png";
-import inter from "/public/interface.png";
-import pod from "/public/podium.png";
+"use client";
+import { useState } from "react";
 import Link from "next/link";
-
 
 export default function Login() {
 
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState(""); // Added for error messages
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(JSON.stringify({email, password }))
+
+    if (!email || !password) {
+      setError("All fields are required.");
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email, password})
+      });
+
+      const data = await res.json();
+      if (data.error == "found") {
+        alert("User successfully found!");
+        setError(""); // Clear any previous errors
+      }
+      else {
+        const errorData = await res.json();
+        console.log('Error:', errorData);
+        setError(errorData.error || "An error occurred. Please try again.");
+      }
+
+    } catch (error) {
+      console.error('An error occurred:', error);
+      setError("An unexpected error occurred. Please try again.");
+      alert("An error occurred. These credentials may already be in use");
+  }
   return (
     <main className="bg-tree-pattern bg-cover bg-top w-full h-screen">
       <div className="flex items-center">
@@ -34,6 +66,8 @@ export default function Login() {
             <h2 className="text-xl italic mb-5">
               Welcome back, hunter.
             </h2>
+
+            {error && <div className="text-red-500 mb-4">{error}</div>} {/* Error message */}
 
             <label>E-mail:</label>
             <input type="text" className="border border-black rounded p-1 mb-2" />

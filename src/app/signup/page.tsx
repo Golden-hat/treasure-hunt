@@ -1,8 +1,10 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 
 export default function Signup() {
+  const router = useRouter();
 
   // STATE VARIABLES
   const [name, setName] = useState("");
@@ -11,7 +13,6 @@ export default function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // Added for error messages
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,21 +33,21 @@ export default function Signup() {
       });
 
       const data = await res.json();
-      if (data.error == "ok") {
+      if (data.result == "ok") {
         console.log('User created: ', data);
         alert("User successfully registered!");
-        setError(""); // Clear any previous errors
+        router.push("/login")
       }
       else {
         const errorData = await res.json();
         console.log('Error:', errorData);
-        setError(errorData.error || "An error occurred. Please try again.");
+        setError(errorData.result || "An error occurred. Please try again.");
       }
 
     } catch (error) {
       console.error('An error occurred:', error);
       setError("An unexpected error occurred. Please try again.");
-      alert("An error occurred. These credentials may already be in use");
+      alert("An error occurred. These credentials may already be in use.");
   }
 }
 
@@ -77,7 +78,7 @@ return (
             Your journey starts here...
           </h2>
 
-          {error && <div className="text-red-500 mb-4">{error}</div>} {/* Error message */}
+          {error && <div className="text-red-500 mb-4">{error}</div>}
 
           <h1 className="text-lg text-gray-700 font-bold mb-1">
             Personal Data:
@@ -115,7 +116,9 @@ return (
           <div className="flex justify-center mt-5">
             <h1 className="text-center">
               Already have an account?<br />
-              Log in Here!
+              <Link href="/login" className="text-blue-800 underline ">
+                Log In!
+              </Link>
             </h1>
           </div>
         </div>

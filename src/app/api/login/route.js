@@ -1,22 +1,26 @@
 import { sql } from '@vercel/postgres';
 import bcrypt from 'bcrypt';
+import { hash } from 'crypto';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
-  const { name, surname, username, email, password } = await request.json()
-
-  const hashPassword = await bcrypt.compare(pass) // Correct usage
+  const { email, password } = await request.json()
+  console.log({ email, password })
 
   try {
-    // Insert the new user into the database
-    const insertUserQuery = await sql`
-        SELECT * from users WHERE email = ${email} AND password ${hashPassword}
-      `;
-    // Return the new user data (excluding the password)
-    return NextResponse.json({ name: name, surname: surname, username: username, email: email, error: "ok" })
+    const query = await sql`
+      SELECT * from users WHERE email = ${email}
+    `;
+    const hashedPassword = query.rows[0].password
+    const match = await bcrypt.compare(password, hashedPassword)
+    
+    if (match) {
+      console.log("passwords match")
+      return NextResponse.json({ result: "ok" })
+    }
+    return NextResponse.json({ result: "wrong" })
 
   } catch (error) {
-    console.error('Signup Error:', error);
-    return NextResponse.json({ error: "" })
+    return NextResponse.json({ result: "ko" })
   }
 }

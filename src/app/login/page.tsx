@@ -10,7 +10,7 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(JSON.stringify({email, password }))
+    console.log(JSON.stringify({ email, password }))
 
     if (!email || !password) {
       setError("All fields are required.");
@@ -23,25 +23,37 @@ export default function Login() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email, password})
+        body: JSON.stringify({ email, password })
       });
 
       const data = await res.json();
-      if (data.error == "found") {
+      if (data.result == "ok") {
         alert("User successfully found!");
         setError(""); // Clear any previous errors
       }
+      else if (data.result == "ko") {
+        alert("It seems you haven't signed up. No such credentials found in database.");
+        setError("Please try again. Make sure you have previously signed in.");
+        setError(""); // Clear any previous errors
+        setEmail(""); setPassword("");
+      }
+      else if (data.result == "wrong") {
+        alert("Invalid password. Try again.");
+        setError("Please try again.");
+        setError(""); // Clear any previous errors
+        setEmail(""); setPassword("");
+      }
       else {
-        const errorData = await res.json();
-        console.log('Error:', errorData);
-        setError(errorData.error || "An error occurred. Please try again.");
+        setError("An error occurred. Please try again.");
+        setEmail(""); setPassword("");
       }
 
     } catch (error) {
       console.error('An error occurred:', error);
-      setError("An unexpected error occurred. Please try again.");
-      alert("An error occurred. These credentials may already be in use");
+      alert("An error occurred. Check your credentials.");
+    }
   }
+  
   return (
     <main className="bg-tree-pattern bg-cover bg-top w-full h-screen">
       <div className="flex items-center">
@@ -70,22 +82,24 @@ export default function Login() {
             {error && <div className="text-red-500 mb-4">{error}</div>} {/* Error message */}
 
             <label>E-mail:</label>
-            <input type="text" className="border border-black rounded p-1 mb-2" />
+            <input value={email} onChange={(e) => {setEmail(e.target.value)} } type="text" className="border border-black rounded p-1 mb-2" />
             <label>Password:</label>
-            <input type="text" className="border border-black rounded p-1 mb-2" />
+            <input value={password} onChange={(e) => {setPassword(e.target.value)} } type="password" className="border border-black rounded p-1 mb-2" />
             <div className="flex">
               <input type="checkbox" className="p"></input>
               <label className="pl-2 text-gray-500 italic text-sm mt-1">Remember me</label>
             </div>
             <div className="flex justify-center mt-5">
-              <button className="text-2xl items-ce bg-green-600 w-1/4 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
+              <button onClick={handleSubmit} className="text-2xl items-ce bg-green-600 w-1/4 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
                 Log in!
               </button>
             </div>
             <div className="flex justify-center mt-5">
               <h1 className="text-center">
                 Don't have an account yet?<br />
-                Sign Up!
+                <Link href="/signup" className="text-blue-800 underline ">
+                  Sign Up!
+                </Link>
               </h1>
             </div>
           </div>
@@ -93,5 +107,4 @@ export default function Login() {
       </div>
     </main>
   );
-)
 }

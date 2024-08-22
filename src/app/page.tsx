@@ -60,7 +60,7 @@ export default function Home() {
         <h1 className="text-2xl text-black 2xl:mr-5 2xl:px-3 font-bold 2xl:py-2 mr-6 ml-0">
           Hello, {username}.
         </h1>
-        <button onClick={handleLogout} className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black 2xl:mr-5 mr-2 rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-black hover:text-white transition duration-300">
+        <button onClick={handleLogout} className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black 2xl:mr-5 mr-2 rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-red-600 hover:text-white transition duration-300">
           Sign out
         </button>
       </div>

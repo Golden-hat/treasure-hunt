@@ -7,6 +7,7 @@ export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState(""); // Added for error messages
+  const [remember, setRemember] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +54,7 @@ export default function Login() {
       alert("An error occurred. Check your credentials.");
     }
   }
-  
+
   return (
     <main className="bg-tree-pattern bg-cover bg-top w-full h-screen">
       <div className="flex items-center">
@@ -82,9 +83,9 @@ export default function Login() {
             {error && <div className="text-red-500 mb-4">{error}</div>} {/* Error message */}
 
             <label>E-mail:</label>
-            <input value={email} onChange={(e) => {setEmail(e.target.value)} } type="text" className="border border-black rounded p-1 mb-2" />
+            <input value={email} onChange={(e) => { setEmail(e.target.value) }} type="text" className="border border-black rounded p-1 mb-2" />
             <label>Password:</label>
-            <input value={password} onChange={(e) => {setPassword(e.target.value)} } type="password" className="border border-black rounded p-1 mb-2" />
+            <input value={password} onChange={(e) => { setPassword(e.target.value) }} type="password" className="border border-black rounded p-1 mb-2" />
             <div className="flex">
               <input type="checkbox" className="p"></input>
               <label className="pl-2 text-gray-500 italic text-sm mt-1">Remember me</label>

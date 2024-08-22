@@ -1,39 +1,104 @@
+"use client";
 import Image from "next/image";
-import fix from "/public/fix.png";
 import phone from "/public/phone.png";
 import QR from "/public/QR.png";
-import dotted from "/public/dotted.png";
 import inter from "/public/interface.png";
 import pod from "/public/podium.png";
 import earth from "/public/earth.png";
 import Link from "next/link";
 
+import { useEffect } from 'react';
+import { useState } from 'react';
+
 export default function Home() {
+
+  const [username, setUsername] = useState("")
+
+  const handleLogout = async () => {
+    const res = await fetch('/api/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    const data = await res.json();
+
+    if (data.result === "ok") {
+      window.location.reload()
+    }
+  }
+
+  let guest =
+    <div className="sm:flex justify-between">
+      <h1 className="2xl:text-4xl text-3xl 2xl:pt-1 font-extrabold">
+        <Link href="/">
+          Treasure Hunts
+        </Link>
+      </h1>
+      <div className="">
+        <button className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black 2xl:mr-5 mr-2 rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-black hover:text-white transition duration-300">
+          <Link href="/login">
+            Log in
+          </Link>
+        </button>
+        <button className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-black hover:text-white transition duration-300">
+          <Link href="/signup">
+            Sign Up
+          </Link>
+        </button>
+      </div>
+    </div>
+
+  let logged =
+    <div className="sm:flex justify-between">
+      <h1 className="2xl:text-4xl text-3xl 2xl:pt-1 font-extrabold">
+        <Link href="/">
+          Treasure Hunts
+        </Link>
+      </h1>
+      <div className="flex justify-start">
+        <h1 className="text-2xl text-black 2xl:mr-5 2xl:px-3 font-bold 2xl:py-2 mr-6 ml-0">
+          Hello, {username}.
+        </h1>
+        <button onClick={handleLogout} className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black 2xl:mr-5 mr-2 rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-black hover:text-white transition duration-300">
+          Sign out
+        </button>
+      </div>
+    </div>
+
+  useEffect(() => {
+    const fetch_session = async () => {
+      const res = await fetch('/api/session', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      const data = await res.json();
+
+      if (data.auth == true) {
+        setUsername(data.user.username)
+      }
+    };
+
+    fetch_session();
+  }, []);
+
   return (
     <main className="2xl:bg-tree-pattern bg-cover bg-top 2xl:flex w-full h-screen ">
 
       <div className="justify-center 2xl:bg-none bg-tree-pattern bg-cover bg-top flex flex-col 2xl:align-center 2xl:justify-center bg-[#eeffe0] p-14 xl:pr-40 xl:pl-40 pb-12 2xl:w-[50vw] 2xl:h-auto h-fit">
 
-        <div className="sm:flex justify-between">
-          <h1 className="2xl:text-4xl text-3xl 2xl:pt-1 font-extrabold">
-            <Link href="/">
-              Treasure Hunts
-            </Link>
-          </h1>
-          <div className="">
-            <button className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black 2xl:mr-5 mr-2 rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-black hover:text-white transition duration-300">
-              <Link href="/login">
-              Log in
-              </Link>
-            </button>
-            <button className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-black hover:text-white transition duration-300">
-              <Link href="/signup">
-              Sign Up
-              </Link>
-            </button>
-          </div>
-        </div>
-      
+        {username ? (
+          <>
+            {logged}
+          </>
+        ) : (
+          <>
+            {guest}
+          </>
+        )}
+
         <div className="flex flex-col align-center justify-center">
           <h1 className="xl:text-6xl text-5xl mt-16 text-black 2xl:max-w-none max-w-3xl font-bold">
             Your Journey to Hidden Treasures Starts Here!

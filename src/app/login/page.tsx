@@ -8,8 +8,8 @@ export default function Login() {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState(""); // Added for error messages
   const [remember, setRemember] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
   useEffect(() => {
     const fetch_session = async () => {
@@ -21,7 +21,7 @@ export default function Login() {
       });
       const data = await res.json();
 
-      if(data.auth == true) {
+      if (data.auth == true) {
         router.push("/")
         alert("You're already logged in with a user. You should first log out.")
       }
@@ -33,9 +33,11 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(JSON.stringify({ email, password, remember }))
+    setLoading(true)
 
     if (!email || !password) {
-      setError("All fields are required.");
+      alert("All fields are required.")
+      setLoading(false)
       return
     }
 
@@ -51,22 +53,18 @@ export default function Login() {
       const data = await res.json();
       if (data.result == "ok") {
         alert("User successfully found!");
-        setError(""); // Clear any previous errors
       }
       else if (data.result == "ko") {
         alert("It seems you haven't signed up. No such credentials found in database.");
-        setError("Please try again. Make sure you have previously signed in.");
-        setError(""); // Clear any previous errors
+        setLoading(false)
         setEmail(""); setPassword("");
       }
       else if (data.result == "wrong") {
         alert("Invalid password. Try again.");
-        setError("Please try again.");
-        setError(""); // Clear any previous errors
+        setLoading(false)
         setEmail(""); setPassword("");
       }
       else {
-        setError("An error occurred. Please try again.");
         setEmail(""); setPassword("");
       }
 
@@ -77,56 +75,74 @@ export default function Login() {
   }
 
   return (
-    <main className="bg-tree-pattern bg-cover bg-top w-full h-screen">
-      <div className="flex items-center">
-        <form className="flex flex-col align-center justify-center bg-[#eeffe0] p-14 pb-12 2xl:pl-40 2xl:pr-40 min-w-[50vw] h-screen">
-
-          <div className="flex justify-between ">
-            <h1 className="font-syncopate font-extrabold text-4xl pt-1">
-              Treasure Hunts
+    <main className="bg-tree-pattern bg-cover bg-full min-h-screen flex justify-center items-center overflow-x-hidden">
+      <form className="flex max-w-[600px] w-full flex-col justify-center px-4 mb-14" onSubmit={handleSubmit}>
+        <div className="flex sm:flex-row flex-col justify-between mb-8 mt-14">
+          <h1 className="font-extrabold text-4xl pt-1">
+            <h1 className=" text-3xl font-extrabold">
+              Treasure Hunts:
             </h1>
-            <div>
-              <button className="bg-transparent border-2 border-black text-black rounded-2xl px-3 py-2 hover:bg-black hover:text-white transition duration-300">
-                <Link href="/">
-                  Back to Home
-                </Link>
-              </button>
+          </h1>
+          <div className="mt-4 sm:mt-0">
+            <div className="bg-transparent border-2 w-fit text-sm border-black text-black rounded-2xl px-3 py-2 hover:bg-black hover:text-white transition duration-300">
+              <Link href="/">
+                Back to Home
+              </Link>
             </div>
           </div>
-          <div className="flex flex-col mt-14 border-2 bg-white border-black p-10 shadow-2xl rounded-2xl">
-            <h1 className="text-5xl mb-2">
-              Log in:
-            </h1>
-            <h2 className="text-xl italic mb-5">
-              Welcome back, hunter.
-            </h2>
+        </div>
 
-            {error && <div className="text-red-500 mb-4">{error}</div>} {/* Error message */}
+        <div className="w-full border-2 bg-white border-black p-8 shadow-2xl rounded-2xl">
+          <h1 className="text-4xl font-bold mb-2">
+            Log In:
+          </h1>
+          <h2 className="text-md mb-6">
+            Welcome back, hunter.
+          </h2>
 
-            <label>E-mail:</label>
-            <input value={email} onChange={(e) => { setEmail(e.target.value) }} type="text" className="border border-black rounded p-1 mb-2" />
-            <label>Password:</label>
-            <input value={password} onChange={(e) => { setPassword(e.target.value) }} type="password" className="border border-black rounded p-1 mb-2" />
-            <div className="flex">
-              <input type="checkbox" onChange={(e) => { console.log(remember); setRemember(e.target.checked); }} className="p"></input>
-              <label className="pl-2 text-gray-500 text-sm">Remember me</label>
-            </div>
-            <div className="flex justify-center mt-5">
-              <button onClick={handleSubmit} className="text-2xl items-ce bg-green-600 w-1/4 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
-                Log in!
-              </button>
-            </div>
-            <div className="flex justify-center mt-5">
-              <h1 className="text-center">
-                Don't have an account yet?<br />
-                <Link href="/signup" className="text-blue-800 underline ">
-                  Sign Up!
-                </Link>
-              </h1>
-            </div>
+
+          <label className="font-semibold">E-mail:</label>
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            className="border border-black rounded p-2 mb-4 w-full"
+          />
+          <label className="font-semibold">Password:</label>
+          <input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            className="border border-black rounded p-2 mb-4 w-full"
+          />
+
+          <div className="flex items-center mb-6">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+              className="mr-2"
+            />
+            <label className="text-gray-500 text-sm">Remember me</label>
           </div>
-        </form>
-      </div>
+
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="flex align-center justify-center w-full items-center bg-green-600 text-white text-2xl py-3 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+          >
+            {loading ? <div className="spinner"></div> : "Log In!"}
+          </button>
+
+          <div className="text-center mt-6">
+            <p>Don't have an account yet?</p>
+            <Link href="/signup" className="text-blue-800 underline">
+              Sign Up!
+            </Link>
+          </div>
+        </div>
+      </form>
     </main>
+
   );
 }

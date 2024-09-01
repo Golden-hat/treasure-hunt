@@ -29,38 +29,41 @@ export default function Home() {
   }
 
   let guest =
-    <div className="sm:flex justify-between">
-      <h1 className="2xl:text-4xl text-3xl 2xl:pt-1 font-extrabold">
+  <div className="flex sm:flex-row flex-col sm:items-center justify-between">
+      <h1 className="2xl:text-4xl text-3xl sm:mb-0 mb-4 font-extrabold">
         <Link href="/">
           Treasure Hunts
         </Link>
       </h1>
-      <div className="">
-        <button className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black 2xl:mr-5 mr-2 rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-black hover:text-white transition duration-300">
+      <div className="flex sm:mt-0 mt-4">
+        <div className="mr-4  bg-transparent border-2 w-fit h-fit text-md border-black text-black rounded-xl p-2 hover:bg-black hover:text-white transition duration-300">
           <Link href="/login">
-            Log in
+            Log In
           </Link>
-        </button>
-        <button className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-black hover:text-white transition duration-300">
+        </div>
+        <div className="bg-transparent border-2 w-fit text-md border-black text-black rounded-xl p-2 hover:bg-black hover:text-white transition duration-300">
           <Link href="/signup">
             Sign Up
           </Link>
-        </button>
+        </div>
       </div>
     </div>
 
   let logged =
-    <div className="sm:flex justify-between">
-      <h1 className="2xl:text-4xl text-3xl 2xl:pt-1 font-extrabold">
+    <div className="flex sm:flex-row flex-col sm:items-center justify-between">
+      <h1 className="2xl:text-4xl text-3xl sm:mb-0 mb-4 font-extrabold">
         <Link href="/">
           Treasure Hunts
         </Link>
       </h1>
-      <div className="flex justify-start">
-        <h1 className="text-2xl text-black 2xl:mr-5 2xl:px-3 font-bold 2xl:py-2 mr-6 ml-0">
+      <div className="flex items-center">
+        <h1 className="text-md text-black font-bold mr-4">
           Hello, {username}.
         </h1>
-        <button onClick={handleLogout} className="bg-transparent border-2 border-black 2xl:text-xl text-sm text-black 2xl:mr-5 mr-2 rounded-lg 2xl:px-3 px-2 2xl:py-2 hover:bg-red-600 hover:text-white transition duration-300">
+        <button
+          onClick={handleLogout}
+          className="bg-transparent border-2 text-sm border-black text-black rounded-xl p-2 hover:bg-red-600 hover:border-red-600 hover:text-white transition duration-300"
+        >
           Log out
         </button>
       </div>
@@ -87,7 +90,7 @@ export default function Home() {
   return (
     <main className="2xl:bg-tree-pattern bg-cover bg-top 2xl:flex w-full h-screen ">
 
-      <div className="justify-center 2xl:bg-none bg-tree-pattern bg-cover bg-top flex flex-col 2xl:align-center 2xl:justify-center bg-[#eeffe0] p-14 xl:pr-40 xl:pl-40 pb-12 2xl:w-[50vw] 2xl:h-auto h-fit">
+      <div className="justify-center 2xl:bg-none bg-tree-pattern bg-cover bg-top flex flex-col 2xl:align-center 2xl:justify-center bg-[#eeffe0] p-6 xl:pr-40 xl:pl-40 pb-12 2xl:w-[50vw] 2xl:h-auto h-fit">
 
         {username ? (
           <>
@@ -119,7 +122,7 @@ export default function Home() {
       <div className="2xl:flex 2xl:bg-transparent bg-[#eeffe0] 2xl:flex-col lg:grid lg:grid-cols-2 xl:flex-row flex-col 2xl:overflow-x-hidden scroll-smooth 2xl:overflow-y-scroll 2xl:w-[50vw] pb-10">
 
         <div className="flex align-center justify-center 2xl:pr-20 2xl:pl-20 2xl:pb-0 2xl:pt-40 2xl:m-0 m-10 lg:mt-10 mt-0">
-          <div className=" border-2 bg-white border-black p-10 shadow-2xl rounded-2xl flex align-center xl:flex-row flex-col max-w-2xl">
+          <div className=" border-2 bg-white border-black 2xl:p-10 p-4 shadow-2xl rounded-2xl flex align-center xl:flex-row flex-col max-w-2xl">
             <Image
               className="w-[60%] m-auto max-h-[500px] object-contain transform scale-90 2xl:mr-6 lg:w-[40%]"
               src={phone} // Path to your image
@@ -142,7 +145,7 @@ export default function Home() {
         </div>
 
         <div className="flex 2xl:pb-0 justify-center 2xl:pr-20 2xl:pl-20 2xl:pt-20 2xl:m-0 m-10">
-          <div className="border-2 bg-white border-black p-10 shadow-2xl rounded-2xl max-w-2xl ">
+          <div className="border-2 bg-white border-black 2xl:p-10 p-4 shadow-2xl rounded-2xl max-w-2xl ">
             <h1 className="2xl:text-6xl text-4xl mb-10 text-black text-center font-bold">
               You make the rules of the game
             </h1>
@@ -164,7 +167,7 @@ export default function Home() {
         </div>
 
         <div className="flex 2xl:pb-0 justify-center 2xl:pr-20 2xl:pl-20 2xl:pt-20 2xl:m-0 m-10">
-          <div className="border-2 bg-white border-black p-10 shadow-2xl rounded-2xl max-w-2xl flex flex-col text-center">
+          <div className="border-2 2xl:p-10 p-4 bg-white border-black shadow-2xl rounded-2xl max-w-2xl flex flex-col text-center">
             <h1 className="2xl:text-4xl text-3xl text-black font-bold">
               Challenge your friends and improve your score on your favorite hunts!
             </h1>
@@ -181,8 +184,8 @@ export default function Home() {
         </div>
 
         <div className="flex 2xl:pb-0 justify-center 2xl:pr-20 2xl:pl-20 2xl:pt-20 2xl:m-0 m-10">
-          <div className="border-2 bg-white border-black p-10 shadow-2xl rounded-2xl justify-center max-w-2xl">
-            <h1 className="text-5xl mt-6 text-black text-center font-bold mb-5">
+          <div className="border-2 bg-white border-black 2xl:p-10 p-4 shadow-2xl rounded-2xl max-w-2xl flex flex-col text-center">
+            <h1 className="2xl:text-5xl text-3xl mt-6 text-black font-bold mb-5">
               The globe is your playground. Let the hunt begin!
             </h1>
             <Image
@@ -195,9 +198,7 @@ export default function Home() {
             </h2>
           </div>
         </div>
-
       </div>
-
     </main>
   );
 }

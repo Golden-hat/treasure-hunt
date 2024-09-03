@@ -22,3 +22,7 @@ h1 h2 h3 p input label button{
   height: 40px;
   animation: spin 1s linear infinite;
 }
+
+.leaflet-container {
+	cursor: move !important;
+}

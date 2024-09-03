@@ -183,7 +183,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex 2xl:pb-0 justify-center 2xl:pr-20 2xl:pl-20 2xl:pt-20 2xl:m-0 m-10">
+        <div className="flex 2xl:pb-40 justify-center 2xl:pr-20 2xl:pl-20 2xl:pt-20 2xl:m-0 m-10">
           <div className="border-2 bg-white border-black 2xl:p-10 p-4 shadow-2xl rounded-2xl max-w-2xl flex flex-col text-center">
             <h1 className="2xl:text-5xl text-3xl mt-6 text-black font-bold mb-5">
               The globe is your playground. Let the hunt begin!

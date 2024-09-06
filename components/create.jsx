@@ -1,5 +1,6 @@
 "use client";
 import Drawer from './bttm_draw'
+import CheckpointInfo from './checkpointInfo'
 import React, { useState, useRef, useEffect } from 'react';
 import Quill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
@@ -50,13 +51,16 @@ const Right = ({ username }) => {
       <div className="flex justify-center">
         <img src="/nocheck.svg" alt="Description of image" className="w-[80%]" />
       </div>
+      <div className='flex flex-row justify-center items-center'>
+        <CheckpointInfo></CheckpointInfo>
+      </div>
     </>
 
   return (
-    <div class="overflow-auto px-6 relative h-screen">
+    <div className="overflow-auto px-6 relative h-screen">
       <div className='mb-6 rounded-2xl bg-[#e6e6e6] p-6'>
         <h1 className='font-bold text-4xl mb-2 font-caveat'>Create Hunt</h1>
-        <div className=''>
+        <div>
           <span className='text-md text-center'>
             Hunts are made out of checkpoints. Set a checkpoint <span className='font-bold'>by clicking on the map</span> at the point in which you want to place them.
           </span>
@@ -73,7 +77,7 @@ const Right = ({ username }) => {
           <p className='text-xs mb-2'>Click to add a banner!</p>
           <div className='flex flex-col items-center max-w-[80%]'>
             <h1 className='font-caveat text-center text-5xl bold'>{name}</h1>
-            <h1 className='font-caveat text-center text-2xl italic bold text-gray-600'>By {username}.</h1>
+            <h1 className='font-caveat text-center text-2xl italic bold text-gray-600'>By {username}</h1>
           </div>
         </div>
         <Quill theme="snow" modules={{ toolbar: false }} value={editorContent}></Quill>

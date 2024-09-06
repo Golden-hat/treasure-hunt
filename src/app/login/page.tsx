@@ -78,11 +78,11 @@ export default function Login() {
     <main className="bg-tree-pattern bg-cover bg-full min-h-screen flex justify-center items-center overflow-x-hidden">
       <form className="flex max-w-[600px] w-full flex-col justify-center px-4 mb-14" onSubmit={handleSubmit}>
         <div className="flex sm:flex-row flex-col justify-between mb-8 mt-14">
-          <h1 className="font-extrabold text-4xl pt-1">
-            <h1 className=" text-3xl font-extrabold">
-              Treasure Hunts:
+          <div className="font-extrabold text-4xl pt-1">
+            <h1 className=" text-4xl font-caveat font-extrabold">
+              Treasure Hunts
             </h1>
-          </h1>
+          </div>
           <div className="mt-4 sm:mt-0">
             <div className="bg-transparent border-2 w-fit text-sm border-black text-black rounded-2xl px-3 py-2 hover:bg-black hover:text-white transition duration-300">
               <Link href="/">
@@ -123,7 +123,7 @@ export default function Login() {
               onChange={(e) => setRemember(e.target.checked)}
               className="mr-2"
             />
-            <label className="text-gray-500 text-sm">Remember me</label>
+            <label onClick={() => setRemember(!remember)} className="select-none text-gray-500 text-sm">Remember me</label>
           </div>
 
           <button

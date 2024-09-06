@@ -1,8 +1,10 @@
 "use client";
 import dynamic from 'next/dynamic';
-import Right from '../../../components/create'
+import Create from '../../../components/create'
+import Right_draw from '../../../components/right_draw'
 
 import { useEffect, useState } from 'react';
+import React from 'react';
 
 // Dynamically load the Map component to avoid SSR issues
 const Map = dynamic(() => import('../../../components/map'), {
@@ -11,7 +13,42 @@ const Map = dynamic(() => import('../../../components/map'), {
 
 export default function Home() {
 
+  const [open, setOpen] = React.useState(false);
   const [username, setUsername] = useState("")
+
+  {/* MENU CONTENT */ }
+  const paperProps = {
+    style: {
+      width: "500px",
+      height: "100%",
+      zIndex: "2",
+      backgroundColor: "rgb(242, 242, 242)"
+    },
+  };
+
+  const stringArray = ['Home', 'Create Hunts', 'Profile', 'Log out', 'About Us'];
+  const content =
+    <div className=''>
+      <h1 className="font-extrabold font-caveat text-5xl mt-[13px] pb-4 border-black border-b-2 w-full">
+        Treasure Hunts
+      </h1>
+      {stringArray.map((item, index) => (
+        <p className="font-bold text-2xl text-black pt-6 pb-6 
+                      border-b-[1px] border-gray-600 hover:text-green-600 
+                      cursor-pointer transition duration-100" 
+          key={index}
+          onClick={() => handleButtonClick(index)}>
+            {item}
+        </p> // Make sure to use a unique key for each element
+      ))}
+    </div>
+    
+  const handleButtonClick = (index: number) => {
+    if (index === 3) {
+      handleLogout()
+    }
+    setOpen(false)
+  };
 
   const handleLogout = async () => {
     const res = await fetch('/api/logout', {
@@ -52,28 +89,24 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col w-[500px] relative top-0 left-0 h-full bg-[#eeffe0] z-1">
+
         {/* TOPBAR */}
-        <div className="flex justify-between  border-black items-center ">
-          <h1 className="p-4 text-md text-black font-bold">
+        <div className="flex px-6 pt-6 justify-between mb-6 border-black items-center ">
+          <h1 className="text-xl font-extrabold text-black">
             Hello, {username}.
           </h1>
-          <div className='p-4'>
-            <button
-              className="bg-transparent mr-4 border-2 text-sm border-black text-black rounded-xl p-2 hover:bg-green-600 hover:border-green-600 hover:text-white transition duration-300"
+            <button className='z-10'
+              onClick={() => setOpen(!open)}
             >
-              View Profile
+              <img src="/menu.svg" className="w-[100%] h-[100%]" alt="Menu" />
             </button>
-            <button
-              onClick={handleLogout}
-              className="bg-transparent border-2 text-sm border-black text-black rounded-xl p-2 hover:bg-red-600 hover:border-red-600 hover:text-white transition duration-300"
-            >
-              Log out
-            </button>
-          </div>
         </div>
 
-        {/* RIGHT MENU */}
-        <Right />
+        {/* MENU */}
+        <Right_draw paperProps={paperProps} open={open} setOpen={setOpen} content={content}></Right_draw>
+
+        {/* CREATE MENU */}
+        <Create username={username}/>
       </div>
     </div>
   );

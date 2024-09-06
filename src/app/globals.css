@@ -1,13 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@100;200;300;400;500;600;700&display=swap');
-
-h1 h2 h3 p input label button{
-  font-family: "Archivo", sans-serif;
-}
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -18,8 +13,8 @@ h1 h2 h3 p input label button{
   border: 4px solid rgb(197, 184, 184);
   border-top: 4px solid #ffffff;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   animation: spin 1s linear infinite;
 }
 

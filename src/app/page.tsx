@@ -30,7 +30,7 @@ export default function Home() {
 
   let guest =
   <div className="flex sm:flex-row flex-col sm:items-center justify-between">
-      <h1 className="2xl:text-4xl text-3xl sm:mb-0 mb-4 font-extrabold">
+      <h1 className="2xl:text-5xl font-caveat text-3xl sm:mb-0 mb-4 font-extrabold">
         <Link href="/">
           Treasure Hunts
         </Link>
@@ -51,7 +51,7 @@ export default function Home() {
 
   let logged =
     <div className="flex sm:flex-row flex-col sm:items-center justify-between">
-      <h1 className="2xl:text-4xl text-3xl sm:mb-0 mb-4 font-extrabold">
+      <h1 className="2xl:text-6xl font-caveat text-3xl sm:mb-0 mb-4 font-extrabold">
         <Link href="/">
           Treasure Hunts
         </Link>
@@ -109,10 +109,10 @@ export default function Home() {
           <h2 className="text-black xl:text-2xl text-xl mt-10 align-center 2xl:max-w-none max-w-3xl">
             Uncover Adventure, One Clue at a Time! Solve Clues, Unlock Secrets, and Discover Hidden Treasures! Create treasure hunts and share your experiences!
           </h2>
-          <button className="text-3xl w-fit mt-[5vw] bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
+          <button className="text-4xl w-fit mt-[5vw] font-caveat bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
             Launch Application
           </button>
-          <h2 className="mt-3xl mt-4 w-3/4 xl:text-md text-black font-light italic">
+          <h2 className="mt-3xl mt-4 w-3/4 xl:text-md text-black font-extralight">
             If you haven't logged in yet, you will be redirected to the log in.
           </h2>
         </div>

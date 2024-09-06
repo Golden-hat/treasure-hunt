@@ -58,8 +58,8 @@ export default function Signup() {
       <form className="flex max-w-[600px] w-full flex-col justify-center px-4" onSubmit={handleSubmit}>
         <div className="flex sm:flex-row flex-col justify-between mb-8 mt-14">
           <h1 className="font-extrabold text-4xl pt-1">
-            <h1 className=" text-3xl font-extrabold">
-              Treasure Hunts:
+            <h1 className="font-caveat text-4xl font-extrabold">
+              Treasure Hunts
             </h1>
           </h1>
           <div className="mt-4 sm:mt-0">

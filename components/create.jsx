@@ -6,6 +6,7 @@ import Quill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 
 const Right = ({ username }) => {
 
@@ -18,7 +19,6 @@ const Right = ({ username }) => {
   }
 
   const quillRef = useRef(null); // Reference to the editor div
-  const [quill, setQuill] = useState(null); // State to hold the Quill instance
   const [editorContent, setEditorContent] = useState(''); // Store the HTML content
 
   const paperProps = {
@@ -51,7 +51,11 @@ const Right = ({ username }) => {
       <div className="flex justify-center">
         <img src="/nocheck.svg" alt="Description of image" className="w-[80%]" />
       </div>
-      <div className='flex flex-row justify-center items-center'>
+      <div className='flex flex-col'>
+        <CheckpointInfo></CheckpointInfo>
+        <CheckpointInfo></CheckpointInfo>
+        <CheckpointInfo></CheckpointInfo>
+        <CheckpointInfo></CheckpointInfo>
         <CheckpointInfo></CheckpointInfo>
       </div>
     </>
@@ -61,7 +65,7 @@ const Right = ({ username }) => {
       <div className='mb-6 rounded-2xl bg-[#e6e6e6] p-6'>
         <h1 className='font-bold text-4xl mb-2 font-caveat'>Create Hunt</h1>
         <div>
-          <span className='text-md text-center'>
+          <span className='text-md'>
             Hunts are made out of checkpoints. Set a checkpoint <span className='font-bold'>by clicking on the map</span> at the point in which you want to place them.
           </span>
         </div>

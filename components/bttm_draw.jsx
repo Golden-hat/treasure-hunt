@@ -1,5 +1,4 @@
 "use client";
-import React from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 const BottomSheet = ({ paperProps, open, setOpen, content }) => {
 
@@ -7,11 +6,12 @@ const BottomSheet = ({ paperProps, open, setOpen, content }) => {
     <div>
       {/* DRAWER */}
       <SwipeableDrawer
-        variant="persistent"
         anchor="bottom"
         open={open}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
+        variant='persistent'
+        // BackdropProps={{ invisible: true }}
         PaperProps={paperProps}
       >
         <div style={{paddingLeft:20, paddingRight:20}}>

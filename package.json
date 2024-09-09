@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.1.0",
+    "@dnd-kit/sortable": "^8.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/base": "^5.0.0-beta.40",
@@ -26,6 +29,7 @@
     "next-auth": "^4.24.7",
     "nextjs": "^0.0.3",
     "quill": "^2.0.2",
+    "random-bigint": "^0.0.1",
     "react": "^18",
     "react-dom": "^18",
     "react-draggable": "^4.4.6",

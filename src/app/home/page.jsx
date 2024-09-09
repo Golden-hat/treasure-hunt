@@ -15,11 +15,19 @@ export default function Home() {
 
   const [open, setOpen] = React.useState(false);
   const [username, setUsername] = useState("")
+  const [checkpoints, setCheckpoints] = useState([])
+  const [detailToggles, setDetailToggles] = useState([])
+  const [count, setCount] = useState(1)
+
+  const fetchCheckpoints = (childData) => {
+    setCheckpoints(childData);
+  };
 
   {/* MENU CONTENT */ }
   const paperProps = {
     style: {
-      width: "500px",
+      width:"100%",
+      maxWidth: "500px",
       height: "100%",
       zIndex: "2",
       backgroundColor: "rgb(242, 242, 242)"
@@ -43,7 +51,7 @@ export default function Home() {
       ))}
     </div>
     
-  const handleButtonClick = (index: number) => {
+  const handleButtonClick = (index) => {
     if (index === 3) {
       handleLogout()
     }
@@ -78,14 +86,14 @@ export default function Home() {
         setUsername(data.user.username)
       }
     };
-
     fetch_session();
-  }, []);
+    setCheckpoints(checkpoints)
+  }, [checkpoints]);
 
   return (
     <div className="flex relative overflow-hidden h-screen">
       <div className="flex-1 overflow-hidden z-0">
-        <Map />
+        <Map fetchCheckpoints={fetchCheckpoints}/>
       </div>
 
       <div className="flex flex-col w-[500px] relative top-0 left-0 h-full bg-[#eeffe0] z-1">
@@ -106,12 +114,9 @@ export default function Home() {
         <Right_draw paperProps={paperProps} open={open} setOpen={setOpen} content={content}></Right_draw>
 
         {/* CREATE MENU */}
-        <Create username={username}/>
+        <Create username={username} checkpointData={checkpoints} detailToggles={detailToggles}/>
       </div>
     </div>
   );
-}
-function setOpen(arg0: boolean): void {
-  throw new Error('Function not implemented.');
 }
 

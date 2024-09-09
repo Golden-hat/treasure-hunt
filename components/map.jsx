@@ -45,7 +45,6 @@ const SearchControl = () => {
       searchLabel: 'Enter address',
     });
 
-
     map.addControl(searchControl);
 
     return () => map.removeControl(searchControl);

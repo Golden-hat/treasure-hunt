@@ -25,10 +25,6 @@ const Right = ({ username, checkpointData}) => {
     e.preventDefault();
   };
 
-  useEffect(() => {
-    setCheckpoints(checkpoints)
-  }, [checkpoints])
-
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
@@ -42,7 +38,6 @@ const Right = ({ username, checkpointData}) => {
   };
 
   useEffect(() => { setCheckpoints(checkpointData)}, [checkpointData] )
-
 
   const toggleDetails = (index) => {
     const updatedOpenDetails = openDetails.map((state, i) => (i === index ? !state : state));
@@ -77,7 +72,7 @@ const Right = ({ username, checkpointData}) => {
     </button>
   );
 
-  const DraggableCheckpoint = ({ id, index, place, coordinates }) => {
+  const DraggableCheckpoint = ({ id, checkpoint }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
     const style = {
@@ -96,11 +91,9 @@ const Right = ({ username, checkpointData}) => {
         <div className="checkpoint-content">
           <CheckpointInfo
             id={id}
-            openDetails={openDetails[index]}
-            toggleDetails={() => toggleDetails(index)}
-            index={index}
-            place={place}
-            coordinates={coordinates}
+            openDetails={openDetails[id]}
+            toggleDetails={() => toggleDetails(id)}
+            checkpoint={checkpoint}
           />
         </div>
 
@@ -150,11 +143,9 @@ const Right = ({ username, checkpointData}) => {
                   <div className='flex flex-col'>
                     {checkpointData.map((checkpoint, index) => (
                       <DraggableCheckpoint
-                        key={checkpoint.id}
-                        id={checkpoint.id}
-                        index={index}
-                        place={checkpoint.place}
-                        coordinates={checkpoint.coordinates}
+                        key={index+1}
+                        id={index+1}
+                        checkpoint={checkpoint}
                       />
                     ))}
                   </div>

@@ -2,22 +2,22 @@
 import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 
-const CheckpointInfo = ({ index, toggleDetails, openDetails, place, coordinates }) => {
+const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoint }) => {
 
   const Quill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
   const [remember, setRemember] = useState(false);
-  const [placeEdit, setPlaceEdit] = useState(place);
+  const [placeEdit, setPlaceEdit] = useState(checkpoint.place);
   const [describe, setDescribe] = useState("");
 
   return (
     <div className='flex flex-col'>
       <div className='flex flex-row items-center'>
         <div className='flex items-center justify-center w-12 mr-4 h-12 bg-blue-400 text-white rounded-full'>
-          <h1 className='flex text-xl font-extrabold'>{index+1}</h1>
+          <h1 className='flex text-xl font-extrabold'>{id}</h1>
         </div>
         <div className='max-w-[300px]'>
-          <h1 className='font-bold break-words'>{placeEdit}</h1>
-          <p>{coordinates}</p>
+          <h1 className='font-bold break-words'>{id}</h1>
+          <p>{id}</p>
         </div>
         {/* Toggle details button */}
         <button onClick={toggleDetails} className='ml-auto'>

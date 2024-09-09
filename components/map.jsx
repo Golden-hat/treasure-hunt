@@ -4,14 +4,13 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 import 'leaflet-geosearch/dist/geosearch.css';
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet';
-const random = require('random-bigint')
 
 const { BaseLayer, Overlay } = LayersControl;
 
 class Checkpoint {
-
+  static id = 1
   constructor(coordinates) {
-    this.id = random(128) // 128 bits // Assign current ID and then increment
+    this.id = Checkpoint.id++;
     this.coordinates = coordinates; // Expecting an array like [x, y]
     this.place = JSON.stringify(coordinates); // Stringified version of coordinates
   }

@@ -9,8 +9,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import dynamic from "next/dynamic";
 
-const Right = ({ username, checkpointData, fetchCheckpoints}) => {
-  const [name, setName] = useState(""); 
+const Right = ({ username, checkpointData}) => {
+  const [name, setName] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [loading, setLoading] = useState(false);
   const [editorContent, setEditorContent] = useState('');
@@ -41,7 +41,7 @@ const Right = ({ username, checkpointData, fetchCheckpoints}) => {
     }
   };
 
-  useEffect(() => { setCheckpoints(checkpoints); fetchCheckpoints(checkpoints); console.log(checkpointData)}, [checkpoints] )
+  useEffect(() => { setCheckpoints(checkpointData)}, [checkpointData] )
 
 
   const toggleDetails = (index) => {

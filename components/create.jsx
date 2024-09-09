@@ -8,6 +8,7 @@ import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-ki
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import dynamic from "next/dynamic";
+import { chipClasses } from '@mui/material';
 
 const Right = ({ username, checkpointData}) => {
   const [name, setName] = useState("");
@@ -25,10 +26,6 @@ const Right = ({ username, checkpointData}) => {
     e.preventDefault();
   };
 
-  useEffect(() => {
-    setCheckpoints(checkpoints)
-  }, [checkpoints])
-
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
@@ -40,6 +37,9 @@ const Right = ({ username, checkpointData}) => {
       });
     }
   };
+
+  useEffect(() => { setCheckpoints(checkpointData)}, [checkpointData] )
+
 
   const toggleDetails = (index) => {
     const updatedOpenDetails = openDetails.map((state, i) => (i === index ? !state : state));
@@ -74,7 +74,7 @@ const Right = ({ username, checkpointData}) => {
     </button>
   );
 
-  const DraggableCheckpoint = ({ id, index, place, coordinates }) => {
+  const DraggableCheckpoint = ({ id, checkpoint }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
     const style = {
@@ -89,15 +89,14 @@ const Right = ({ username, checkpointData}) => {
     };
 
     return (
-      <div ref={setNodeRef} style={style} {...attributes}>
+      <div ref={setNodeRef} style={style} {...attributes} >
         <div className="checkpoint-content">
           <CheckpointInfo
             id={id}
-            openDetails={openDetails[index]}
-            toggleDetails={() => toggleDetails(index)}
-            index={index}
-            place={place}
-            coordinates={coordinates}
+            openDetails={openDetails[id]}
+            toggleDetails={() => toggleDetails(id)}
+            order={id}
+            checkpoint={checkpoint}
           />
         </div>
 
@@ -143,15 +142,13 @@ const Right = ({ username, checkpointData}) => {
             </div>
             <div className="overflow-y-auto h-[80vh] pr-4 overflow-x-hidden">
               <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={checkpointData} strategy={verticalListSortingStrategy}>
+                <SortableContext items={checkpoints} strategy={verticalListSortingStrategy}>
                   <div className='flex flex-col'>
-                    {checkpointData.map((checkpoint, index) => (
+                    {checkpoints.map((checkpoint, index) => (
                       <DraggableCheckpoint
-                        key={checkpoint.id}
-                        id={checkpoint.id}
-                        index={index}
-                        place={checkpoint.place}
-                        coordinates={checkpoint.coordinates}
+                        key={index+1}
+                        id={index+1}
+                        checkpoint={checkpoint}
                       />
                     ))}
                   </div>

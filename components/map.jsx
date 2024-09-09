@@ -10,8 +10,10 @@ const { BaseLayer, Overlay } = LayersControl;
 
 class Checkpoint {
 
+  static autoId = 1
+
   constructor(coordinates) {
-    this.id = random(128) // 128 bits // Assign current ID and then increment
+    this.id = Checkpoint.autoId++// 128 bits // Assign current ID and then increment
     this.coordinates = coordinates; // Expecting an array like [x, y]
     this.place = JSON.stringify(coordinates); // Stringified version of coordinates
   }

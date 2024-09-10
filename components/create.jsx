@@ -9,7 +9,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import dynamic from "next/dynamic";
 
-const Right = ({ username, checkpointData}) => {
+const Right = ({ username, checkpointData, fetchCheckpoints}) => {
   const [name, setName] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,17 +27,21 @@ const Right = ({ username, checkpointData}) => {
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-
-    if (active.id !== over.id) {
+  
+    // Ensure both active and over are not null and have valid IDs
+    if (over && active.id !== over.id) {
       setCheckpoints((prev) => {
-        const oldIndex = prev.indexOf(active.id);
-        const newIndex = prev.indexOf(over.id);
-        return arrayMove(prev, oldIndex, newIndex);
+        const oldIndex = prev.findIndex(item => item.id === active.id);
+        const newIndex = prev.findIndex(item => item.id === over.id);
+  
+        if (oldIndex !== -1 && newIndex !== -1) {
+          return arrayMove(prev, oldIndex, newIndex);
+        }
+        return prev; // Return unchanged array if indices are invalid
       });
     }
   };
-
-  useEffect(() => { setCheckpoints(checkpointData)}, [checkpointData] )
+  useEffect(() => { setCheckpoints(checkpointData); fetchCheckpoints(checkpoints); console.log(checkpoints)}, [checkpointData, checkpoints] )
 
   const toggleDetails = (index) => {
     const updatedOpenDetails = openDetails.map((state, i) => (i === index ? !state : state));
@@ -72,7 +76,7 @@ const Right = ({ username, checkpointData}) => {
     </button>
   );
 
-  const DraggableCheckpoint = ({ id, checkpoint }) => {
+  const DraggableCheckpoint = ({ id, checkpoints, pos }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
     const style = {
@@ -91,9 +95,11 @@ const Right = ({ username, checkpointData}) => {
         <div className="checkpoint-content">
           <CheckpointInfo
             id={id}
+            pos={pos}
             openDetails={openDetails[id]}
             toggleDetails={() => toggleDetails(id)}
-            checkpoint={checkpoint}
+            checkpoints={checkpoints}
+            fetchCheckpoints={fetchCheckpoints}
           />
         </div>
 
@@ -121,8 +127,8 @@ const Right = ({ username, checkpointData}) => {
             <img src="/nocheck.svg" alt="No checkpoints" className="w-[80%]" />
           </div>
         ) : (
-          <>
-            <div className="sticky top-0 bg- z-10 pb-4">
+          <div className='flex flex-col overflow-y-auto h-[80vh] max-h-screen'>
+            <div className="">
               <h1 className='mb-4'>
                 You can place <span className='font-bold'>up to 50 checkpoints</span>.
               </h1>
@@ -137,22 +143,23 @@ const Right = ({ username, checkpointData}) => {
                 Collapse All
               </button>
             </div>
-            <div className="overflow-y-auto h-[80vh] pr-4 overflow-x-hidden">
+            <div className="pr-4">
               <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={checkpointData} strategy={verticalListSortingStrategy}>
+                <SortableContext items={checkpoints} strategy={verticalListSortingStrategy}>
                   <div className='flex flex-col'>
-                    {checkpointData.map((checkpoint, index) => (
+                    {checkpoints.map((checkpoint, index) => (
                       <DraggableCheckpoint
-                        key={index+1}
-                        id={index+1}
-                        checkpoint={checkpoint}
+                        pos={index}
+                        key={checkpoint.id} // Ensure this is a unique ID
+                        id={checkpoint.id}   // Pass a unique, consistent ID
+                        checkpoints={checkpoints}
                       />
                     ))}
                   </div>
                 </SortableContext>
               </DndContext>
             </div>
-          </>
+          </div>
         )
       }
     </>
@@ -211,7 +218,7 @@ const Right = ({ username, checkpointData}) => {
             <label className='mb-1'>Description of the Hunt:</label>
             <Quill value={editorContent} onChange={setEditorContent} style={{ height: "125px" }} />
             <label className='mt-14'>Difficulty:</label>
-            <input value={difficulty} onChange={(e) => { setdifficulty(e.target.value) }} type="range" className="" />
+            <input value={difficulty} onChange={(e) => { setDifficulty(e.target.value) }} type="range" className="" />
             <div className='flex flex-row justify-between mb-6'>
               <p className='text-sm'>Very easy</p><p className='text-sm '>Medium</p><p className='text-sm '>Very Hard</p>
             </div>

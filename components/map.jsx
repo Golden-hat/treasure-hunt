@@ -74,8 +74,6 @@ const MapEventsHandler = ({ markers, setMarkers, checkpoints, setCheckpoints, fe
     let newCheckpoints = [...checkpoints]
     newCheckpoints[index].coordinates = [e.target.getLatLng().lat, e.target.getLatLng().lng]
     newCheckpoints[index].coordinates = [e.target.getLatLng().lat, e.target.getLatLng().lng]
-    newCheckpoints[index].place = JSON.stringify([e.target.getLatLng().lat, e.target.getLatLng().lng])
-    newCheckpoints[index].place = JSON.stringify([e.target.getLatLng().lat, e.target.getLatLng().lng])
     setCheckpoints(newCheckpoints);
   };
 

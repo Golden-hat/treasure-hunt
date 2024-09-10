@@ -114,7 +114,7 @@ export default function Home() {
         <Right_draw paperProps={paperProps} open={open} setOpen={setOpen} content={content}></Right_draw>
 
         {/* CREATE MENU */}
-        <Create username={username} checkpointData={checkpoints} detailToggles={detailToggles}/>
+        <Create username={username} checkpointData={checkpoints} detailToggles={detailToggles} fetchCheckpoints={fetchCheckpoints}/>
       </div>
     </div>
   );

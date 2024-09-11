@@ -94,6 +94,7 @@ const Right = ({ username, checkpointData, fetchCheckpoints}) => {
       <div ref={setNodeRef} style={style} {...attributes}>
         <div className="checkpoint-content">
           <CheckpointInfo
+            key={id}
             id={id}
             pos={pos}
             openDetails={openDetails[id]}

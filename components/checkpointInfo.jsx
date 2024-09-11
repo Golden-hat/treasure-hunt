@@ -6,19 +6,18 @@ import Quill from "react-quill"
 const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoints, pos, fetchCheckpoints }) => {
 
   const [list, setList] = useState(checkpoints)
-  const [remember, setRemember] = useState(false);
+  const [visible, setVisible] = useState(checkpoints[pos].visible);
   const [placeEdit, setPlaceEdit] = useState(checkpoints[pos].place);
-  const [describe, setDescribe] = useState("");
+  const [describe, setDescribe] = useState(checkpoints[pos].describe);
 
   const modifyInfo = () => {
     const copyList = [...list]
     copyList[pos].place = placeEdit
-    setList(copyList)
+    copyList[pos].visible = visible
+    copyList[pos].describe = describe
+
     fetchCheckpoints(copyList)
   }
-
-  useEffect(() => {
-  }, [checkpoints]); 
 
   return (
     <div className='flex flex-col'>
@@ -59,11 +58,11 @@ const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoints, pos, fetc
             <div className="flex items-center mb-1">
               <input
                 type="checkbox"
-                checked={remember}
-                onChange={(e) => {setRemember(e.target.checked); }}
+                checked={visible}
+                onChange={(e) => { setVisible(e.target.checked); }}
                 className="mr-2"
               />
-              <label onClick={() => {setRemember(!remember); }} className="select-none text-gray-500 text-sm">Make visible</label>
+              <label onClick={() => {setVisible(!visible); }} className="select-none text-gray-500 text-sm">Make visible</label>
             </div>
             <p className='text-sm italic mt-1 mb-4'>
               Making a checkpoint visible will reveal its location in the map instead of keeping it a mistery. Note though that this will not

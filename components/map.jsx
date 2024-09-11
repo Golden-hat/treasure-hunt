@@ -13,6 +13,8 @@ class Checkpoint {
     this.id = Checkpoint.id++;
     this.coordinates = coordinates; // Expecting an array like [x, y]
     this.place = JSON.stringify(coordinates); // Stringified version of coordinates
+    this.visible = false
+    this.describe = ""
   }
 }
 

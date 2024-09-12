@@ -1,7 +1,7 @@
 "use client";
 import Drawer from './bttm_draw';
 import CheckpointInfo from './checkpointInfo';
-import React, { useState, useMemo, useEffect} from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import { closestCenter, DndContext } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -9,17 +9,17 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import dynamic from "next/dynamic";
 
-const Right = ({ username, checkpointData, fetchCheckpoints}) => {
+const Right = ({ username, checkpointData, fetchCheckpoints, fetchDetails }) => {
   const [name, setName] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [loading, setLoading] = useState(false);
   const [editorContent, setEditorContent] = useState('');
-  const [open, setOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
   const [checkpoints, setCheckpoints] = useState(checkpointData);
   const [dragEnabled, setDragEnabled] = useState(true);
   const [openDetails, setOpenDetails] = useState(Array(50).fill(false));
 
-  const Quill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
+  const Quill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,13 +27,13 @@ const Right = ({ username, checkpointData, fetchCheckpoints}) => {
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-  
+
     // Ensure both active and over are not null and have valid IDs
     if (over && active.id !== over.id) {
       setCheckpoints((prev) => {
         const oldIndex = prev.findIndex(item => item.id === active.id);
         const newIndex = prev.findIndex(item => item.id === over.id);
-  
+
         if (oldIndex !== -1 && newIndex !== -1) {
           return arrayMove(prev, oldIndex, newIndex);
         }
@@ -41,7 +41,7 @@ const Right = ({ username, checkpointData, fetchCheckpoints}) => {
       });
     }
   };
-  useEffect(() => { setCheckpoints(checkpointData); fetchCheckpoints(checkpoints); console.log(checkpoints)}, [checkpointData, checkpoints] )
+  useEffect(() => { fetchDetails(dragEnabled), setCheckpoints(checkpointData); fetchCheckpoints(checkpoints); console.log(checkpoints) }, [checkpointData, checkpoints, dragEnabled])
 
   const toggleDetails = (index) => {
     const updatedOpenDetails = openDetails.map((state, i) => (i === index ? !state : state));
@@ -56,7 +56,7 @@ const Right = ({ username, checkpointData, fetchCheckpoints}) => {
       marginLeft: "auto",
       marginRight: "1px",
       zIndex: "100",
-      overflowY:"hidden",
+      overflowY: "hidden",
       backgroundColor: "rgb(242, 242, 242)",
     },
   };
@@ -128,22 +128,22 @@ const Right = ({ username, checkpointData, fetchCheckpoints}) => {
             <img src="/nocheck.svg" alt="No checkpoints" className="w-[80%]" />
           </div>
         ) : (
-          <div className='flex flex-col overflow-y-auto h-[80vh] max-h-screen'>
-            <div className="">
-              <h1 className='mb-4'>
-                You can place <span className='font-bold'>up to 50 checkpoints</span>.
-              </h1>
-              <button
-                onClick={() => {
-                  setOpenDetails(Array(50).fill(false));
-                  setDragEnabled(true);
-                }}
-                className='font-bold bg-transparent border-2 text-sm border-black 
+          <div className="">
+            <h1 className='mb-4'>
+              You can place <span className='font-bold'>up to 50 checkpoints</span>.
+            </h1>
+            <button
+              onClick={() => {
+                setOpenDetails(Array(50).fill(false));
+                setDragEnabled(true);
+              }}
+              className='font-bold bg-transparent border-2 text-sm border-black 
               text-black rounded-xl p-2 hover:bg-blue-400 hover:border-blue-400 hover:text-white 
               transition duration-100 mb-4'>
-                Collapse All
-              </button>
-            </div>
+              Collapse All
+            </button>
+            {(!dragEnabled) ? <h1 className='pr-4 font-bold text-green-600, text-sm text-center'>Details open. Dragging, creating and deleting points is disabled </h1> : <div className='mt-5 mb-5'></div>}
+            <div className='flex flex-col overflow-y-auto h-[70vh] max-h-screen'>
             <div className="pr-4">
               <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={checkpoints} strategy={verticalListSortingStrategy}>
@@ -159,6 +159,7 @@ const Right = ({ username, checkpointData, fetchCheckpoints}) => {
                   </div>
                 </SortableContext>
               </DndContext>
+            </div>
             </div>
           </div>
         )

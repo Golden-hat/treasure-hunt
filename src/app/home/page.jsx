@@ -18,10 +18,15 @@ export default function Home() {
   const [checkpoints, setCheckpoints] = useState([])
   const [detailToggles, setDetailToggles] = useState([])
   const [count, setCount] = useState(1)
+  const [changeEnable, setChangeEnable] = useState()
 
   const fetchCheckpoints = (childData) => {
     setCheckpoints(childData);
   };
+
+  const fetchDetails = (value) => {
+    setChangeEnable(value)
+  }
 
   {/* MENU CONTENT */ }
   const paperProps = {
@@ -87,13 +92,14 @@ export default function Home() {
       }
     };
     fetch_session();
+    setChangeEnable(changeEnable)
     setCheckpoints(checkpoints)
-  }, [checkpoints]);
+  }, [checkpoints, changeEnable]);
 
   return (
     <div className="flex relative overflow-hidden h-screen">
       <div className="flex-1 overflow-hidden z-0">
-        <Map fetchCheckpoints={fetchCheckpoints}/>
+        <Map fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable}/>
       </div>
 
       <div className="flex flex-col w-[500px] relative top-0 left-0 h-full bg-[#eeffe0] z-1">
@@ -114,7 +120,7 @@ export default function Home() {
         <Right_draw paperProps={paperProps} open={open} setOpen={setOpen} content={content}></Right_draw>
 
         {/* CREATE MENU */}
-        <Create username={username} checkpointData={checkpoints} detailToggles={detailToggles} fetchCheckpoints={fetchCheckpoints}/>
+        <Create username={username} checkpointData={checkpoints} detailToggles={detailToggles} fetchCheckpoints={fetchCheckpoints} fetchDetails={fetchDetails} changeEnable={changeEnable}/>
       </div>
     </div>
   );

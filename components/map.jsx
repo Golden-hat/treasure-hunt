@@ -44,18 +44,29 @@ const SearchControl = () => {
       searchLabel: 'Enter address',
     });
 
-
     map.addControl(searchControl);
 
     return () => map.removeControl(searchControl);
-  }, [map, ]);
+  }, [map,]);
 
   return null;
 };
 
-const MapEventsHandler = ({ markers, setMarkers, checkpoints, setCheckpoints, fetchCheckpoints}) => {
+const MapEventsHandler = ({ markers, setMarkers, checkpoints, setCheckpoints, fetchCheckpoints, changeEnable }) => {
+
+  useEffect(() => {
+    setMarkers((prevMarkers) => {
+      // Return a new array by mapping over the previous markers
+      return prevMarkers.map((marker) => ({
+        ...marker,
+        draggable: !marker.draggable,
+      }));
+    });
+  }, [changeEnable]);
+  
   useMapEvents({
     dblclick: (e) => {
+      if (!changeEnable) { console.log(changeEnable); return; }
       fetchCheckpoints(checkpoints)
       const { lat, lng } = e.latlng;
       const newMarker = {
@@ -64,7 +75,7 @@ const MapEventsHandler = ({ markers, setMarkers, checkpoints, setCheckpoints, fe
       };
       setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
       const newCheckpoint = new Checkpoint([lat, lng])
-      setCheckpoints((checkpoint) => [...checkpoint, newCheckpoint ]);
+      setCheckpoints((checkpoint) => [...checkpoint, newCheckpoint]);
     },
   });
 
@@ -80,6 +91,7 @@ const MapEventsHandler = ({ markers, setMarkers, checkpoints, setCheckpoints, fe
   };
 
   const remove = (index, e) => {
+    if (!changeEnable) { console.log(changeEnable); return; }
     let newMarkers = [...markers];
     newMarkers.splice(index, 1)
     setMarkers(newMarkers);
@@ -98,7 +110,7 @@ const MapEventsHandler = ({ markers, setMarkers, checkpoints, setCheckpoints, fe
           icon={icon}
           draggable={marker.draggable}
           eventHandlers={{
-            dragend: (e) => handleMarkerDragEnd(index, e),
+            dragend: (e) => { handleMarkerDragEnd(index, e) },
             dblclick: (e) => remove(index, e),
           }}
         >
@@ -119,7 +131,7 @@ const MapEventsHandler = ({ markers, setMarkers, checkpoints, setCheckpoints, fe
 };
 
 // Main Map component
-const Map = ({fetchCheckpoints}) => {
+const Map = ({ fetchCheckpoints, changeEnable }) => {
   const [markers, setMarkers] = useState([]);
   const [checkpoints, setCheckpoints] = useState([]);
 
@@ -155,7 +167,7 @@ const Map = ({fetchCheckpoints}) => {
       {/* Add the Search Control to the map */}
       <SearchControl />
       {/* Handle map events and draggable markers */}
-      <MapEventsHandler markers={markers} setMarkers={setMarkers} checkpoints={checkpoints} setCheckpoints={setCheckpoints} fetchCheckpoints={fetchCheckpoints} />
+      <MapEventsHandler markers={markers} setMarkers={setMarkers} checkpoints={checkpoints} setCheckpoints={setCheckpoints} fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} />
     </MapContainer>
   );
 };

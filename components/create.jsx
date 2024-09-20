@@ -9,7 +9,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import dynamic from "next/dynamic";
 
-const Right = ({ username, checkpointData, fetchCheckpoints, fetchDetails }) => {
+const Right = ({ focus, setFocus, username, checkpointData, fetchCheckpoints, fetchDetails }) => {
   const [name, setName] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,6 +41,7 @@ const Right = ({ username, checkpointData, fetchCheckpoints, fetchDetails }) => 
       });
     }
   };
+
   useEffect(() => { fetchDetails(dragEnabled), setCheckpoints(checkpointData); fetchCheckpoints(checkpoints); console.log(checkpoints) }, [checkpointData, checkpoints, dragEnabled])
 
   const toggleDetails = (index) => {
@@ -76,7 +77,7 @@ const Right = ({ username, checkpointData, fetchCheckpoints, fetchDetails }) => 
     </button>
   );
 
-  const DraggableCheckpoint = ({ id, checkpoints, pos }) => {
+  const DraggableCheckpoint = ({ id, checkpoints, index }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
     const style = {
@@ -87,21 +88,21 @@ const Right = ({ username, checkpointData, fetchCheckpoints, fetchDetails }) => 
       margin: '8px 0',
       background: 'lightgray',
       borderRadius: '4px',
-      cursor: 'default'
     };
 
     return (
-      <div ref={setNodeRef} style={style} {...attributes}>
+      <div ref={setNodeRef} style={style} {...attributes} onClick={() => {setFocus(checkpoints[index].coordinates); console.log(checkpoints[index].coordinates); fetchCheckpoints(checkpoints)}}>
         <div className="checkpoint-content">
           <CheckpointInfo
             key={id}
             id={id}
-            pos={pos}
+            index={index}
             openDetails={openDetails[id]}
             toggleDetails={() => toggleDetails(id)}
             checkpoints={checkpoints}
             fetchCheckpoints={fetchCheckpoints}
           />
+
         </div>
 
         {/* DRAG HANDLE */}
@@ -142,15 +143,15 @@ const Right = ({ username, checkpointData, fetchCheckpoints, fetchDetails }) => 
               transition duration-100 mb-4'>
               Collapse All
             </button>
-            {(!dragEnabled) ? <h1 className='pr-4 font-bold text-green-600, text-sm text-center'>Details open. Dragging, creating and deleting points is disabled </h1> : <div className='mt-5 mb-5'></div>}
-            <div className='flex flex-col overflow-y-auto h-[70vh] max-h-screen'>
+            {(!dragEnabled) ? <h1 className='pr-4 font-bold text-green-600, text-sm text-center'>Details open. Dragging, creating and deleting points is disabled </h1> : <div className='mt-4 mb-9'></div>}
+            <div className='mt-4 flex flex-col overflow-y-auto h-[70vh] max-h-screen'>
             <div className="pr-4">
               <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={checkpoints} strategy={verticalListSortingStrategy}>
                   <div className='flex flex-col'>
                     {checkpoints.map((checkpoint, index) => (
                       <DraggableCheckpoint
-                        pos={index}
+                        index={index}
                         key={checkpoint.id} // Ensure this is a unique ID
                         id={checkpoint.id}   // Pass a unique, consistent ID
                         checkpoints={checkpoints}

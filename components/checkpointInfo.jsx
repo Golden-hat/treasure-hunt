@@ -3,31 +3,33 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Quill from "react-quill"
 
-const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoints, pos, fetchCheckpoints }) => {
+const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoints, index, fetchCheckpoints }) => {
 
   const [list, setList] = useState(checkpoints)
-  const [visible, setVisible] = useState(checkpoints[pos].visible);
-  const [placeEdit, setPlaceEdit] = useState(checkpoints[pos].place);
-  const [describe, setDescribe] = useState(checkpoints[pos].describe);
+  const [visible, setVisible] = useState(checkpoints[index].visible);
+  const [placeEdit, setPlaceEdit] = useState(checkpoints[index].place);
+  const [describe, setDescribe] = useState(checkpoints[index].describe);
 
   const modifyInfo = () => {
     const copyList = [...list]
-    copyList[pos].place = placeEdit
-    copyList[pos].visible = visible
-    copyList[pos].describe = describe
+    copyList[index].place = placeEdit
+    copyList[index].visible = visible
+    copyList[index].describe = describe
 
     fetchCheckpoints(copyList)
   }
+
+  useState(() => { const copyList = [...list]; list[index].order = index + 1; }, [index, list])
 
   return (
     <div className='flex flex-col'>
       <div className='flex flex-row items-center'>
         <div className='flex items-center justify-center w-12 mr-4 h-12 bg-blue-400 text-white rounded-full'>
-          <h1 className='flex text-xl font-extrabold'>{pos + 1}</h1>
+          <h1 className='flex text-xl font-extrabold'>{index + 1}</h1>
         </div>
         <div className='max-w-[300px]'>
           <h1 className='font-bold break-words'>{placeEdit}</h1>
-          <p>{checkpoints[pos].coordinates}</p>
+          <p className="text-xs">{checkpoints[index].coordinates[0]}, {checkpoints[index].coordinates[1]}</p>
         </div>
         <button onClick={toggleDetails} className='ml-auto'>
           {openDetails ?
@@ -62,7 +64,7 @@ const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoints, pos, fetc
                 onChange={(e) => { setVisible(e.target.checked); }}
                 className="mr-2"
               />
-              <label onClick={() => {setVisible(!visible); }} className="select-none text-gray-500 text-sm">Make visible</label>
+              <label onClick={() => { setVisible(!visible); }} className="select-none text-gray-500 text-sm">Make visible</label>
             </div>
             <p className='text-sm italic mt-1 mb-4'>
               Making a checkpoint visible will reveal its location in the map instead of keeping it a mistery. Note though that this will not
@@ -72,7 +74,7 @@ const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoints, pos, fetc
               className='font-bold bg-transparent border-2 text-sm border-black 
               text-black rounded-xl p-2 hover:bg-green-600
               hover:border-green-600 hover:text-white 
-              transition duration-300 mb-4'>
+              transition duration-150 mb-4'>
               Apply Changes
             </button>
           </form>

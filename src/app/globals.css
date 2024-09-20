@@ -21,3 +21,23 @@
 .leaflet-container {
 	cursor: move !important;
 }
+
+.custom-div-icon {
+  background-color: #2a6be4;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 100%;
+  border: 2px solid white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  line-height: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-marker-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

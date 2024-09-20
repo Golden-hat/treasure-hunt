@@ -16,9 +16,9 @@ export default function Home() {
   const [open, setOpen] = React.useState(false);
   const [username, setUsername] = useState("")
   const [checkpoints, setCheckpoints] = useState([])
-  const [detailToggles, setDetailToggles] = useState([])
   const [count, setCount] = useState(1)
   const [changeEnable, setChangeEnable] = useState()
+  const [focus, setFocus] = useState([39.47391, -0.37966])
 
   const fetchCheckpoints = (childData) => {
     setCheckpoints(childData);
@@ -99,7 +99,7 @@ export default function Home() {
   return (
     <div className="flex relative overflow-hidden h-screen">
       <div className="flex-1 overflow-hidden z-0">
-        <Map fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable}/>
+        <Map fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} focus={focus}/>
       </div>
 
       <div className="flex flex-col w-[500px] relative top-0 left-0 h-full bg-[#eeffe0] z-1">
@@ -120,7 +120,7 @@ export default function Home() {
         <Right_draw paperProps={paperProps} open={open} setOpen={setOpen} content={content}></Right_draw>
 
         {/* CREATE MENU */}
-        <Create username={username} checkpointData={checkpoints} detailToggles={detailToggles} fetchCheckpoints={fetchCheckpoints} fetchDetails={fetchDetails} changeEnable={changeEnable}/>
+        <Create setFocus={setFocus} username={username} checkpointData={checkpoints} fetchCheckpoints={fetchCheckpoints} fetchDetails={fetchDetails} changeEnable={changeEnable}/>
       </div>
     </div>
   );

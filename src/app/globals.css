@@ -41,3 +41,48 @@
   justify-content: center;
   align-items: center;
 }
+
+/* Hide the default close button's content */
+.leaflet-popup-close-button {
+  padding: 20px !important;
+  position: relative;
+  width: 30px;       /* Adjust width */
+  height: 30px;      /* Adjust height */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.leaflet-popup-close-button span{
+  display: none;
+}
+
+/* Forcefully hide the original 'X' */
+.leaflet-popup-close-button::before {
+  content: ''; /* Completely remove the original 'X' */
+  display: none; /* Ensure the original icon is not shown */
+}
+
+/* Add custom 'X' using ::after */
+.leaflet-popup-close-button::after {
+  content: 'x';   /* Custom cross symbol */
+  font-size: 24px; /* Adjust size */
+  color: black;    /* Custom color */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the custom 'X' */
+}
+
+/* Hover effect for custom cross */
+.leaflet-popup-close-button:hover::after {
+  color: red; /* Change color on hover */
+}
+
+.leaflet-popup-content-wrapper{
+  padding: 15px !important;
+}
+
+.leaflet-popup-content p {
+  margin: 0px 0 !important;
+}

@@ -1,6 +1,6 @@
 "use client";
-import Drawer from './bttm_draw';
-import CheckpointInfo from './checkpointInfo';
+import Drawer from './draw_bottom';
+import CheckpointInfo from './cp_info';
 import React, { useState, useMemo, useEffect } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import { closestCenter, DndContext } from '@dnd-kit/core';
@@ -9,13 +9,13 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import dynamic from "next/dynamic";
 
-const Right = ({ focus, setFocus, username, checkpointData, fetchCheckpoints, fetchDetails }) => {
+const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails }) => {
+
   const [name, setName] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [loading, setLoading] = useState(false);
   const [editorContent, setEditorContent] = useState('');
   const [open, setOpen] = useState(false);
-  const [checkpoints, setCheckpoints] = useState(checkpointData);
   const [dragEnabled, setDragEnabled] = useState(true);
   const [openDetails, setOpenDetails] = useState(Array(50).fill(false));
 
@@ -28,21 +28,23 @@ const Right = ({ focus, setFocus, username, checkpointData, fetchCheckpoints, fe
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    // Ensure both active and over are not null and have valid IDs
-    if (over && active.id !== over.id) {
-      setCheckpoints((prev) => {
-        const oldIndex = prev.findIndex(item => item.id === active.id);
-        const newIndex = prev.findIndex(item => item.id === over.id);
+    if (active.id !== over.id) {
+      const oldIndex = checkpoints.findIndex((item) => item.id === active.id);
+      const newIndex = checkpoints.findIndex((item) => item.id === over.id);
 
-        if (oldIndex !== -1 && newIndex !== -1) {
-          return arrayMove(prev, oldIndex, newIndex);
-        }
-        return prev; // Return unchanged array if indices are invalid
+      const newCheckpoints = arrayMove(checkpoints, oldIndex, newIndex);
+
+      let iterator = 1
+      newCheckpoints.forEach(element => {
+        element.order = iterator
+        iterator++;
       });
+
+      fetchCheckpoints(newCheckpoints);
     }
   };
 
-  useEffect(() => { fetchDetails(dragEnabled), setCheckpoints(checkpointData); fetchCheckpoints(checkpoints); console.log(checkpoints) }, [checkpointData, checkpoints, dragEnabled])
+  useEffect(() => { fetchDetails(dragEnabled); }, [dragEnabled])
 
   const toggleDetails = (index) => {
     const updatedOpenDetails = openDetails.map((state, i) => (i === index ? !state : state));
@@ -67,7 +69,6 @@ const Right = ({ focus, setFocus, username, checkpointData, fetchCheckpoints, fe
       setOpen(true)
       setOpenDetails(Array(50).fill(false))
       setDragEnabled(true)
-      console.log(checkpointData)
     }}
       className='font-bold bg-transparent border-2 text-sm border-black 
       text-black rounded-xl p-2 hover:bg-green-600
@@ -91,7 +92,7 @@ const Right = ({ focus, setFocus, username, checkpointData, fetchCheckpoints, fe
     };
 
     return (
-      <div ref={setNodeRef} style={style} {...attributes} onClick={() => {setFocus(checkpoints[index].coordinates); console.log(checkpoints[index].coordinates); fetchCheckpoints(checkpoints)}}>
+      <div ref={setNodeRef} style={style} {...attributes} onClick={() => {setFocus(checkpoints[index].marker.position);}}>
         <div className="checkpoint-content">
           <CheckpointInfo
             key={id}
@@ -124,7 +125,7 @@ const Right = ({ focus, setFocus, username, checkpointData, fetchCheckpoints, fe
     <>
       <h3 className="text-2xl mt-6 font-bold mb-4">Checkpoint View</h3>
       {
-        checkpointData.length === 0 ? (
+        checkpoints.length === 0 ? (
           <div className="flex justify-center">
             <img src="/nocheck.svg" alt="No checkpoints" className="w-[80%]" />
           </div>
@@ -145,22 +146,23 @@ const Right = ({ focus, setFocus, username, checkpointData, fetchCheckpoints, fe
             </button>
             {(!dragEnabled) ? <h1 className='pr-4 font-bold text-green-600, text-sm text-center'>Details open. Dragging, creating and deleting points is disabled </h1> : <div className='mt-4 mb-9'></div>}
             <div className='mt-4 flex flex-col overflow-y-auto h-[70vh] max-h-screen'>
-            <div className="pr-4">
-              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={checkpoints} strategy={verticalListSortingStrategy}>
-                  <div className='flex flex-col'>
-                    {checkpoints.map((checkpoint, index) => (
-                      <DraggableCheckpoint
-                        index={index}
-                        key={checkpoint.id} // Ensure this is a unique ID
-                        id={checkpoint.id}   // Pass a unique, consistent ID
-                        checkpoints={checkpoints}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
+              <div className="pr-4">
+                <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={checkpoints} strategy={verticalListSortingStrategy}>
+                    <div className='flex flex-col'>
+                      {console.log(checkpoints)}
+                      {checkpoints.map((checkpoint, index) => (
+                        <DraggableCheckpoint
+                          index={index}
+                          key={checkpoint.id}
+                          id={checkpoint.id}
+                          checkpoints={checkpoints}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </div>
             </div>
           </div>
         )
@@ -193,7 +195,7 @@ const Right = ({ focus, setFocus, username, checkpointData, fetchCheckpoints, fe
             <h1 className='font-caveat text-center text-2xl italic bold text-gray-600'>By {username}</h1>
           </div>
         </div>
-        <Quill theme="snow" modules={{ toolbar: false }} value={editorContent}></Quill>
+        <Quill readOnly={true} theme="snow" modules={{ toolbar: false, matchVisual:false }} value={editorContent}></Quill>
       </div>
 
       <div className='mb-10 rounded-2xl bg-[#e6e6e6] px-2 pt-6'>

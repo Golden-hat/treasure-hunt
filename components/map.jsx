@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { MapContainer, TileLayer, LayersControl, Marker, useMap, useMapEvents, Popup } from "react-leaflet";
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
+import 'react-quill/dist/quill.snow.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet';
@@ -13,7 +14,6 @@ class Checkpoint {
   static order = 1;
   constructor(marker) {
     this.id = Checkpoint.id++;
-    this.coordinates = marker.position;
     this.visible = false;
     this.describe = "";
     this.order = Checkpoint.order++;
@@ -58,38 +58,43 @@ const SearchControl = () => {
   return null;
 };
 
-const MapEventsHandler = ({ checkpoints, setCheckpoints, fetchCheckpoints, changeEnable, focus }) => {
+const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }) => {
 
   const map = useMap();
-
   const Quill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
 
   const centerMap = (lat, lng, zoom = 15) => {
     map.setView([lat, lng], zoom);
+  
+    // Find the checkpoint that matches the given lat/lng
+    const matchingCheckpoint = checkpoints.find(
+      (checkpoint) => checkpoint.marker.position[0] === lat && checkpoint.marker.position[1] === lng
+    );
   };
+  
 
   useEffect(() => {
-    centerMap(focus[0], focus[1], 18)
+    map.closePopup()
+    centerMap(focus[0], focus[1], 19);
   }, [focus]);
-
-  useEffect(() => {
-    fetchCheckpoints(checkpoints);
-  }, [checkpoints, fetchCheckpoints]);
 
   useMapEvents({
     dblclick: (e) => {
+      map.closePopup();
       if (!changeEnable) return;
       const { lat, lng } = e.latlng;
       const newMarker = { position: [lat, lng], draggable: true };
       const newCheckpoint = new Checkpoint(newMarker);
-      setCheckpoints((checkpoint) => [...checkpoint, newCheckpoint]);
+      const copy = [...checkpoints, newCheckpoint];
+      fetchCheckpoints(copy);
     },
   });
 
   const handleMarkerDragEnd = (index, e) => {
+    map.closePopup();
     const newCheckpoints = [...checkpoints];
     newCheckpoints[index].marker.position = [e.target.getLatLng().lat, e.target.getLatLng().lng];
-    setCheckpoints(newCheckpoints);
+    fetchCheckpoints(newCheckpoints);
   };
 
   const remove = (index) => {
@@ -103,7 +108,7 @@ const MapEventsHandler = ({ checkpoints, setCheckpoints, fetchCheckpoints, chang
       }
     });
 
-    setCheckpoints(newCheckpoints);
+    fetchCheckpoints(newCheckpoints);
     Checkpoint.order--;
   };
 
@@ -114,7 +119,7 @@ const MapEventsHandler = ({ checkpoints, setCheckpoints, fetchCheckpoints, chang
           key={index}
           position={checkpoint.marker.position}
           icon={createCustomIcon(checkpoints[index].order)}
-          draggable={changeEnable} // Reactively update draggable based on changeEnable
+          draggable={changeEnable}
           eventHandlers={{
             dragend: (e) => handleMarkerDragEnd(index, e),
           }}
@@ -126,7 +131,7 @@ const MapEventsHandler = ({ checkpoints, setCheckpoints, fetchCheckpoints, chang
             <div className='flex items-center justify-center flex-row mb-2 mt-4 h-fit rounded-2xl bg-[#e6e6e6] m-auto px-2 pt-4'>
               <div className='overflow-auto mb-5 w-[300px] justify-center items-center'>
                 <div className='flex flex-col justify-center items-center mb-4'>
-                  <h1 className='font-bold text-3xl font-caveat text-center px-6 mb-6'>Checkpoint Details</h1>
+                  <h1 className='font-bold text-3xl font-caveat text-center px-6 mb-6'>Checkpoint Preview</h1>
                   <div className='cursor-pointer hover:bg-[#c6c6c6] bg-[#d6d6d6] rounded-full p-20 mb-2'>
                     <img src="/add.svg" alt="Description of image" className="scale-[3]" />
                   </div>
@@ -135,10 +140,8 @@ const MapEventsHandler = ({ checkpoints, setCheckpoints, fetchCheckpoints, chang
               <form className="flex flex-col px-3 w-[350px]">
                 <label className='font-bold mb-1'>Name of the Checkpoint:</label>
                 <div className="text-xl mb-2 break-words">{checkpoint.place}</div>
-                <div className="flex flex-col mb-4">
-                  <label className='text-md mb-1'>Checkpoint info</label>
-                  <Quill theme="snow" className="h-[200px] w-[350px] pr-6" modules={{ toolbar: false }}></Quill>
-                </div>
+                <label className='text-md mb-1'>Checkpoint info</label>
+                <Quill className="h-[200px] w-[350px] pr-6 mb-4" readOnly={true} modules={{ toolbar: false }} value={checkpoints[index].describe}></Quill>
                 <button disabled={!changeEnable} onClick={(e) => {
                   e.preventDefault();
                   remove(index);
@@ -159,36 +162,28 @@ const MapEventsHandler = ({ checkpoints, setCheckpoints, fetchCheckpoints, chang
 };
 
 
-const Map = ({ fetchCheckpoints, changeEnable, focus }) => {
-  const [checkpoints, setCheckpoints] = useState([]);
-
-  useEffect(() => {
-    fetchCheckpoints(checkpoints);
-  }, [checkpoints, fetchCheckpoints]);
+const Map = ({ checkpoints, fetchCheckpoints, changeEnable, focus }) => {
 
   return (
-    <MapContainer
-      center={{ lat: 39.47391, lng: -0.37966 }}
-      zoom={15}
-      style={{ height: "100vh", width: "fit" }}
-      doubleClickZoom={false}
-    >
+    <MapContainer  doubleClickZoom={false} zoom={15} center={[51.505, -0.09]} style={{ height: "100vh", width: "100%" }}>
       <LayersControl position="topright">
-        <BaseLayer checked name="OpenStreetMap">
+        <LayersControl.BaseLayer checked name="OpenStreetMap">
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            maxZoom={19} // Allow zooming up to level 20
           />
-        </BaseLayer>
-        <BaseLayer name="Google Satellite">
+        </LayersControl.BaseLayer>
+        <LayersControl.BaseLayer name="Google Satellite">
           <TileLayer
             attribution='&copy; <a href="https://www.google.com/maps">Google</a>'
             url="https://mt.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+            maxZoom={21}
           />
-        </BaseLayer>
+        </LayersControl.BaseLayer>
       </LayersControl>
       <SearchControl />
-      <MapEventsHandler checkpoints={checkpoints} setCheckpoints={setCheckpoints} fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} focus={focus} />
+      <MapEventsHandler checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} focus={focus} />
     </MapContainer>
   );
 };

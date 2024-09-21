@@ -1,7 +1,7 @@
 "use client";
 import dynamic from 'next/dynamic';
 import Create from '../../../components/create'
-import Right_draw from '../../../components/right_draw'
+import Right_draw from '../../../components/menu_right'
 
 import { useEffect, useState } from 'react';
 import React from 'react';
@@ -17,7 +17,7 @@ export default function Home() {
   const [username, setUsername] = useState("")
   const [checkpoints, setCheckpoints] = useState([])
   const [count, setCount] = useState(1)
-  const [changeEnable, setChangeEnable] = useState()
+  const [changeEnable, setChangeEnable] = useState(true)
   const [focus, setFocus] = useState([39.47391, -0.37966])
 
   const fetchCheckpoints = (childData) => {
@@ -52,7 +52,7 @@ export default function Home() {
           key={index}
           onClick={() => handleButtonClick(index)}>
             {item}
-        </p> // Make sure to use a unique key for each element
+        </p>
       ))}
     </div>
     
@@ -99,7 +99,7 @@ export default function Home() {
   return (
     <div className="flex relative overflow-hidden h-screen">
       <div className="flex-1 overflow-hidden z-0">
-        <Map fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} focus={focus}/>
+        <Map checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} focus={focus}/>
       </div>
 
       <div className="flex flex-col w-[500px] relative top-0 left-0 h-full bg-[#eeffe0] z-1">
@@ -120,7 +120,7 @@ export default function Home() {
         <Right_draw paperProps={paperProps} open={open} setOpen={setOpen} content={content}></Right_draw>
 
         {/* CREATE MENU */}
-        <Create setFocus={setFocus} username={username} checkpointData={checkpoints} fetchCheckpoints={fetchCheckpoints} fetchDetails={fetchDetails} changeEnable={changeEnable}/>
+        <Create setFocus={setFocus} username={username} checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} fetchDetails={fetchDetails} changeEnable={changeEnable}/>
       </div>
     </div>
   );

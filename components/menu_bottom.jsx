@@ -1,25 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import Quill from "react-quill"
 
 const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoints, index, fetchCheckpoints }) => {
 
-  const [list, setList] = useState(checkpoints)
   const [visible, setVisible] = useState(checkpoints[index].visible);
   const [placeEdit, setPlaceEdit] = useState(checkpoints[index].place);
   const [describe, setDescribe] = useState(checkpoints[index].describe);
 
   const modifyInfo = () => {
-    const copyList = [...list]
+    const copyList = [...checkpoints]
     copyList[index].place = placeEdit
     copyList[index].visible = visible
     copyList[index].describe = describe
-
     fetchCheckpoints(copyList)
   }
 
-  useState(() => { const copyList = [...list]; list[index].order = index + 1; }, [index, list])
+  useState(() => { const copyList = [...checkpoints]; copyList[index].order = index + 1; fetchCheckpoints(checkpoints) }, [checkpoints])
 
   return (
     <div className='flex flex-col'>
@@ -29,7 +26,7 @@ const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoints, index, fe
         </div>
         <div className='max-w-[300px]'>
           <h1 className='font-bold break-words'>{placeEdit}</h1>
-          <p className="text-xs">{checkpoints[index].coordinates[0]}, {checkpoints[index].coordinates[1]}</p>
+          <p className="text-xs">{checkpoints[index].marker.position[0]}, {checkpoints[index].marker.position[1]}</p>
         </div>
         <button onClick={toggleDetails} className='ml-auto'>
           {openDetails ?
@@ -70,7 +67,7 @@ const CheckpointInfo = ({ id, toggleDetails, openDetails, checkpoints, index, fe
               Making a checkpoint visible will reveal its location in the map instead of keeping it a mistery. Note though that this will not
               reveal its information unless physically scanned.
             </p>
-            <button onClick={() => modifyInfo()}
+            <button onClick={(e) => {e.preventDefault(); modifyInfo()}}
               className='font-bold bg-transparent border-2 text-sm border-black 
               text-black rounded-xl p-2 hover:bg-green-600
               hover:border-green-600 hover:text-white 

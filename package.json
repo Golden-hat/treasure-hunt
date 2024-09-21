@@ -25,7 +25,7 @@
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "leaflet-geosearch": "^4.0.0",
-    "next": "^14.2.5",
+    "next": "^14.2.13",
     "next-auth": "^4.24.7",
     "nextjs": "^0.0.3",
     "quill": "^2.0.2",

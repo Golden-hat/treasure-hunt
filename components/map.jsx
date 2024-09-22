@@ -139,7 +139,7 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
               </div>
               <form className="flex flex-col px-3 w-[350px]">
                 <label className='font-bold mb-1'>Name of the Checkpoint:</label>
-                <div className="text-xl mb-2 break-words">{checkpoint.place}</div>
+                <div className="text-4xl mb-2 font-caveat break-words">{checkpoint.place}</div>
                 <label className='text-md mb-1'>Checkpoint info</label>
                 <Quill className="h-[200px] w-[350px] pr-6 mb-4" readOnly={true} modules={{ toolbar: false }} value={checkpoints[index].describe}></Quill>
                 <button disabled={!changeEnable} onClick={(e) => {

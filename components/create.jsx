@@ -16,6 +16,7 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
   const [loading, setLoading] = useState(false);
   const [editorContent, setEditorContent] = useState('');
   const [open, setOpen] = useState(false);
+  const [qr, setQr] = useState(false);
   const [dragEnabled, setDragEnabled] = useState(true);
   const [openDetails, setOpenDetails] = useState(Array(50).fill(false));
 
@@ -92,7 +93,7 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
     };
 
     return (
-      <div ref={setNodeRef} style={style} {...attributes} onClick={() => {setFocus(checkpoints[index].marker.position);}}>
+      <div ref={setNodeRef} style={style} {...attributes} onClick={() => { setFocus(checkpoints[index].marker.position); }}>
         <div className="checkpoint-content">
           <CheckpointInfo
             key={id}
@@ -144,7 +145,7 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
               transition duration-100 mb-4'>
               Collapse All
             </button>
-            {(!dragEnabled) ? <h1 className='pr-4 font-bold text-green-600, text-sm text-center'>Details open. Dragging, creating and deleting points is disabled </h1> : <div className='mt-4 mb-9'></div>}
+            {(!dragEnabled) ? <h1 className='pr-4 text-green-600, text-sm text-center'>Details open. Dragging, creating and deleting points is disabled </h1> : <div className='pr-4 text-green-600, text-sm text-center'>Click on an arrow to change details of the checkpoints</div>}
             <div className='mt-4 flex flex-col overflow-y-auto h-[70vh] max-h-screen'>
               <div className="pr-4">
                 <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -195,7 +196,7 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
             <h1 className='font-caveat text-center text-2xl italic bold text-gray-600'>By {username}</h1>
           </div>
         </div>
-        <Quill readOnly={true} theme="snow" modules={{ toolbar: false, matchVisual:false }} value={editorContent}></Quill>
+        <Quill readOnly={true} theme="snow" modules={{ toolbar: false, matchVisual: false }} value={editorContent}></Quill>
       </div>
 
       <div className='mb-10 rounded-2xl bg-[#e6e6e6] px-2 pt-6'>
@@ -203,14 +204,6 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
           <h1 className="text-3xl mb-2 font-bold">
             Hunt Details
           </h1>
-
-          {/* <label class="relative inline-flex cursor-pointer items-center ">
-            <div className='flex flex-row mb-4 justify-center items-center mt-4'>
-              <input onChange={() => { setOnline(!online) }} id="switch-3" type="checkbox" class="peer scale-[1.2] sr-only" />
-              <div class="scale-[1.2] peer h-4 w-12 rounded border bg-slate-400 after:absolute after:-top-[5px] after:left-0 after:h-6 after:w-6 after:rounded-md after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-focus:ring-green-300 mr-4"></div>
-              {online ? <h1>Online Hunt</h1> : <h1>Offline Hunt</h1>}
-            </div>
-          </label> */}
 
           <p className='text-sm mt-1 mb-4'>
             The Hunts require <span className='font-bold'>network access and cellullar data to be easily accessible</span>, to provide the best experience for hunters. <span className='font-bold'>
@@ -228,6 +221,24 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
               <p className='text-sm'>Very easy</p><p className='text-sm '>Medium</p><p className='text-sm '>Very Hard</p>
             </div>
           </div>
+
+          <label class="relative inline-flex cursor-pointer items-center ">
+            <div className='flex flex-row mb-2 justify-center items-center'>
+              <input onChange={() => { setQr(!qr) }} id="switch-3" type="checkbox" class="peer scale-[1.2] sr-only" />
+              <div class="scale-[1.2] peer h-4 w-12 rounded border bg-slate-400 after:absolute after:-top-[5px] after:left-0 after:h-6 after:w-6 after:rounded-md after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-focus:ring-green-300 mr-4"></div>
+              {qr ? <h1>QR Hunt</h1> : <h1>Tour</h1>}
+            </div>
+          </label>
+
+          {qr ? 
+            <p className='text-sm mt-1 mb-6'>
+              QR Hunts <span className='font-bold'>will create a QR code for each checkpoint </span> that can be scanned by hunters to get hints to the next checkpoint. <span className='font-bold'>
+              This conceals all checkpoints but the first one. </span>
+          </p> :
+            <p className='text-sm mt-1 mb-6'>
+              Tours <span className='font-bold'> will show every checkpoint that comprises the hunt in the map. </span> This mode is useful to highlight the staples of a location and to offer a more laid back experience to hunters.<span className='font-bold'> </span>
+            </p>
+          }
 
           {/* BUTTON */}
           {input}

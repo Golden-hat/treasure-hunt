@@ -9,7 +9,7 @@ export async function POST(request) {
   console.log({ email, password });
 
   try {
-    const query = await sql`SELECT * FROM users WHERE email = ${email}`;
+    const query = await sql`SELECT * FROM user WHERE email = ${email}`;
 
     if (query.rows.length === 0) {
       return NextResponse.json({ result: "wrong" });

@@ -9,7 +9,7 @@ export async function POST(request) {
 
   try {
     const insertUserQuery = await sql`
-        INSERT INTO users (name, surname, username, email, password)
+        INSERT INTO user (name, surname, username, email, password)
         VALUES (${name}, ${surname}, ${username}, ${email}, ${hashPassword})
       `;
     return NextResponse.json({ name: name, surname: surname, username: username, email: email, result: "ok" })

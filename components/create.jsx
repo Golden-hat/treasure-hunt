@@ -9,6 +9,17 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import dynamic from "next/dynamic";
 
+class Hunt {
+  constructor(name, checkpoints, id, description, isQr) {
+    this.id = id;
+    this.checkpoints = checkpoints;
+    this.name = name;
+    this.description = description;
+    this.isQr = false;
+    this.init_location = checkpoints[0].marker.position;
+  }
+}
+
 const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails }) => {
 
   const [name, setName] = useState("");
@@ -17,6 +28,7 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
   const [editorContent, setEditorContent] = useState('');
   const [open, setOpen] = useState(false);
   const [qr, setQr] = useState(false);
+  const [isPublic, setisPublic] = useState(false);
   const [dragEnabled, setDragEnabled] = useState(true);
   const [openDetails, setOpenDetails] = useState(Array(50).fill(false));
 
@@ -24,6 +36,59 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(JSON.stringify({ name: name, difficulty: difficulty, description: editorContent, qr: qr , isPublic: isPublic }))
+    if(!name || !difficulty || !editorContent) {
+      alert("All fields are required.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/add_hunt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, difficulty, description: editorContent, qr, isPublic })
+      });
+
+      const data = await res.json();
+
+      if (data.result == "ok") {
+        checkpoints.forEach(async element => {
+          try {
+            const res = await fetch('/api/add_checkpoint', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: element.place,
+                hunt: data.id,
+                order: element.order,
+                position_lat: element.marker.position[0],
+                position_lng: element.marker.position[1],
+                description: element.describe,
+                image: element.image,
+              })
+            });
+          } catch (error) {
+            console.error('Error adding checkpoint:', error);
+          }
+        });
+
+        console.log('Hunt created: ', data);
+        alert("Hunt successfully created!");
+      }
+      else {
+        const errorData = await res.json();
+        console.log('Error:', errorData);
+        setLoading(false)
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setLoading(false)
+    }
   };
 
   const handleDragEnd = (event) => {
@@ -66,8 +131,9 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
   };
 
   const input = (
-    <button onClick={() => {
+    <button onClick={(e) => {
       setOpen(true)
+      e.preventDefault()
       setOpenDetails(Array(50).fill(false))
       setDragEnabled(true)
     }}
@@ -200,7 +266,7 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
       </div>
 
       <div className='mb-10 rounded-2xl bg-[#e6e6e6] px-2 pt-6'>
-        <form className="flex flex-col px-3 w-full" onSubmit={handleSubmit}>
+        <form className="flex flex-col px-3 w-full">
           <h1 className="text-3xl mb-2 font-bold">
             Hunt Details
           </h1>
@@ -222,13 +288,18 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
             </div>
           </div>
 
-          <label class="relative inline-flex cursor-pointer items-center ">
-            <div className='flex flex-row mb-2 justify-center items-center'>
-              <input onChange={() => { setQr(!qr) }} id="switch-3" type="checkbox" class="peer scale-[1.2] sr-only" />
-              <div class="scale-[1.2] peer h-4 w-12 rounded border bg-slate-400 after:absolute after:-top-[5px] after:left-0 after:h-6 after:w-6 after:rounded-md after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-focus:ring-green-300 mr-4"></div>
-              {qr ? <h1>QR Hunt</h1> : <h1>Tour</h1>}
-            </div>
-          </label>
+          <div className='flex flex-row mb-2 items-center justify-between'>
+            <label className="relative inline-flex cursor-pointer items-center justify-between">
+              <input checked={qr} onChange={() => setQr(!qr)} id="switch-4" type="checkbox" className="peer scale-[1.4] sr-only" />
+              <div className="scale-[1.2] mr-4 peer h-4 w-11 rounded border bg-slate-400 after:absolute after:-top-[5px] after:left-[-2px] after:h-6 after:w-6 after:rounded-md after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-focus:ring-green-300"></div>
+              {qr ? <h1 className='font-bold'>QR Hunt</h1> : <h1 className='font-bold'>Tour</h1>}
+            </label>
+            <label className="relative inline-flex cursor-pointer items-center justify-between">
+              <input checked={isPublic} onChange={() => setisPublic(!isPublic)} id="switch-3" type="checkbox" className="peer scale-[1.4] sr-only" />
+              <div className="scale-[1.2] mr-4 peer h-4 w-11 rounded border bg-slate-400 after:absolute after:-top-[5px] after:left-[-2px] after:h-6 after:w-6 after:rounded-md after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-focus:ring-green-300"></div>
+              {isPublic ? <h1 className='font-bold'>Public</h1> : <h1 className='font-bold'>Private</h1>}
+            </label>
+          </div>
 
           {qr ? 
             <p className='text-sm mt-1 mb-6'>
@@ -240,10 +311,19 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints, fetchDetails
             </p>
           }
 
+          {isPublic ? 
+            <p className='text-sm mt-1 mb-6'>
+              Public hunts <span className='font-bold'>are for everyone to see. </span> They don't require an invitation code to join.
+          </p> :
+            <p className='text-sm mt-1 mb-6'>
+              Private hunts <span className='font-bold'>are only for people you invite to see. </span> They require an invitation code to join.
+            </p>
+          }
+
           {/* BUTTON */}
           {input}
           <div className="flex justify-center mt-5">
-            <button type="submit" className="flex justify-center font-caveat font-bold align-center w-full items-center text-3xl bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
+            <button onClick={handleSubmit} className="flex justify-center font-caveat font-bold align-center w-full items-center text-3xl bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
               {loading ? <div className="spinner"></div> : "Upload Hunt"}
             </button>
           </div>

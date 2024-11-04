@@ -66,13 +66,11 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
   const centerMap = (lat, lng, zoom = 15) => {
     map.setView([lat, lng], zoom);
   
-    // Find the checkpoint that matches the given lat/lng
     const matchingCheckpoint = checkpoints.find(
       (checkpoint) => checkpoint.marker.position[0] === lat && checkpoint.marker.position[1] === lng
     );
   };
   
-
   useEffect(() => {
     map.closePopup()
     centerMap(focus[0], focus[1], 19);

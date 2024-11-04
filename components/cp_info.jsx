@@ -54,19 +54,6 @@ const CheckpointInfo = ({ toggleDetails, openDetails, checkpoints, index, fetchC
               <label className='text-md mb-1'>Checkpoint info</label>
               <Quill value={describe} onChange={setDescribe} style={{ height: "125px" }} />
             </div>
-            <div className="flex items-center mb-1">
-              <input
-                type="checkbox"
-                checked={visible}
-                onChange={(e) => { setVisible(e.target.checked); }}
-                className="mr-2"
-              />
-              <label onClick={() => { setVisible(!visible); }} className="select-none text-gray-500 text-sm">Make visible</label>
-            </div>
-            <p className='text-sm italic mt-1 mb-4'>
-              Making a checkpoint visible will reveal its location in the map instead of keeping it a mistery. Note though that this will not
-              reveal its information unless physically scanned.
-            </p>
             <button onClick={modifyInfo}
               className='font-bold bg-transparent border-2 text-sm border-black 
               text-black rounded-xl p-2 hover:bg-green-600

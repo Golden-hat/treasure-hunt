@@ -14,15 +14,16 @@ class Checkpoint {
   static order = 1;
   constructor(marker) {
     this.id = Checkpoint.id++;
-    this.visible = false;
     this.describe = "";
     this.order = Checkpoint.order++;
     this.place = `Checkpoint`;
     this.marker = marker;
 
-    // Interface controls
-    this.dragging = false;
+    // Interface and edit controls
     this.editing = false;
+    this.toggleDetails = false;
+    this.tempPlace = "Checkpoint";
+    this.tempDescribe = "";
   }
 }
 
@@ -58,7 +59,7 @@ const SearchControl = () => {
   return null;
 };
 
-const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }) => {
+const MapEventsHandler = ({ checkpoints, fetchCheckpoints, focus }) => {
   const map = useMap();
   const Quill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
 
@@ -74,7 +75,6 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
   useMapEvents({
     dblclick: (e) => {
       map.closePopup();
-      if (!changeEnable) return;
       const { lat, lng } = e.latlng;
       const newMarker = { position: [lat, lng], draggable: true };
       const newCheckpoint = new Checkpoint(newMarker);
@@ -110,7 +110,7 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
           key={index}
           position={checkpoint.marker.position}
           icon={createCustomIcon(checkpoints[index].order)}
-          draggable={changeEnable}
+          draggable={true}
           eventHandlers={{
             dragend: (e) => handleMarkerDragEnd(index, e),
           }}
@@ -131,7 +131,6 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
                 <label className='text-md mb-1'>Checkpoint info</label>
                 <Quill className="h-[200px] w-[350px] pr-6 mb-4" readOnly={true} modules={{ toolbar: false }} value={checkpoints[index].describe}></Quill>
                 <button
-                  disabled={!changeEnable}
                   onClick={(e) => {
                     e.preventDefault();
                     remove(index);
@@ -149,7 +148,7 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
   );
 };
 
-const Map = ({ checkpoints, fetchCheckpoints, changeEnable, focus }) => (
+const Map = ({ checkpoints, fetchCheckpoints, focus }) => (
   <MapContainer doubleClickZoom={false} zoom={15} center={[51.505, -0.09]} style={{ height: "100vh", width: "100%" }}>
     <LayersControl position="topright">
       <BaseLayer checked name="OpenStreetMap">
@@ -168,7 +167,7 @@ const Map = ({ checkpoints, fetchCheckpoints, changeEnable, focus }) => (
       </BaseLayer>
     </LayersControl>
     <SearchControl />
-    <MapEventsHandler checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} focus={focus} />
+    <MapEventsHandler checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} focus={focus} />
   </MapContainer>
 );
 

@@ -16,16 +16,11 @@ export default function Home() {
   const [open, setOpen] = React.useState(false);
   const [username, setUsername] = useState("")
   const [checkpoints, setCheckpoints] = useState([])
-  const [changeEnable, setChangeEnable] = useState(true)
   const [focus, setFocus] = useState([39.47391, -0.37966])
 
   const fetchCheckpoints = (childData) => {
     setCheckpoints(childData);
   };
-
-  const fetchDetails = (value) => {
-    setChangeEnable(value)
-  }
 
   {/* MENU CONTENT */ }
   const paperProps = {
@@ -91,14 +86,13 @@ export default function Home() {
       }
     };
     fetch_session();
-    setChangeEnable(changeEnable)
     setCheckpoints(checkpoints)
-  }, [checkpoints, changeEnable]);
+  }, [checkpoints]);
 
   return (
     <div className="flex relative overflow-hidden h-screen">
       <div className="flex-1 overflow-hidden z-0">
-        <Map checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} focus={focus}/>
+        <Map checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} focus={focus}/>
       </div>
 
       <div className="flex flex-col w-[500px] relative top-0 left-0 h-full bg-[#eeffe0] z-1">
@@ -119,7 +113,7 @@ export default function Home() {
         <Right_draw paperProps={paperProps} open={open} setOpen={setOpen} content={content}></Right_draw>
 
         {/* CREATE MENU */}
-        <Create setFocus={setFocus} username={username} checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} fetchDetails={fetchDetails} changeEnable={changeEnable}/>
+        <Create setFocus={setFocus} username={username} checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} />
       </div>
     </div>
   );

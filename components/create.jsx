@@ -11,7 +11,7 @@ import dynamic from "next/dynamic";
 import DOMPurify from 'dompurify';
 
 class Hunt {
-  constructor(name, checkpoints, id, description, isQr) {
+  constructor(name, checkpoints, id, description) {
     this.id = id;
     this.checkpoints = checkpoints;
     this.name = name;
@@ -21,23 +21,15 @@ class Hunt {
   }
 }
 
-const Right = ({
-  setFocus,
-  username,
-  checkpoints,
-  fetchCheckpoints,
-  fetchDetails,
-}) => {
-  const [name, setName] = useState("");
-  const [difficulty, setDifficulty] = useState(50);
-  const [loading, setLoading] = useState(false);
-  const [editorContent, setEditorContent] = useState("");
-  const [open, setOpen] = useState(false);
+const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
   const [qr, setQr] = useState(false);
-  const [isPublic, setisPublic] = useState(false);
-  const [dragEnabled, setDragEnabled] = useState(true);
-  const [openDetails, setOpenDetails] = useState(Array(50).fill(false));
+  const [name, setName] = useState("");
+  const [open, setOpen] = useState(false);
   const [expand, setExpand] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isPublic, setisPublic] = useState(false);
+  const [difficulty, setDifficulty] = useState(50);
+  const [editorContent, setEditorContent] = useState("");
 
   const Quill = useMemo(
     () => dynamic(() => import("react-quill"), { ssr: false }),
@@ -134,16 +126,8 @@ const Right = ({
   };
 
   useEffect(() => {
-    fetchDetails(dragEnabled);
-  }, [dragEnabled]);
-
-  const toggleDetails = (index) => {
-    const updatedOpenDetails = openDetails.map((state, i) =>
-      i === index ? !state : state
-    );
-    setOpenDetails(updatedOpenDetails);
-    setDragEnabled(!updatedOpenDetails.includes(true));
-  };
+    fetchCheckpoints(checkpoints);
+  }, [checkpoints]);
 
   const paperProps = {
     style: {
@@ -156,23 +140,6 @@ const Right = ({
       backgroundColor: "rgb(242, 242, 242)",
     },
   };
-
-  const input = (
-    <button
-      onClick={(e) => {
-        setOpen(true);
-        e.preventDefault();
-        setOpenDetails(Array(50).fill(false));
-        setDragEnabled(true);
-      }}
-      className="font-bold bg-transparent border-2 text-sm border-black 
-      text-black rounded-xl p-2 hover:bg-green-600
-      hover:border-green-600 hover:text-white 
-      transition duration-300"
-    >
-      View Checkpoints
-    </button>
-  );
 
   const DraggableCheckpoint = ({ id, checkpoints, index }) => {
     const { attributes, listeners, setNodeRef, transform, transition } =
@@ -187,31 +154,31 @@ const Right = ({
       margin: "8px 0",
       background: "lightgray",
       borderRadius: "4px",
+      cursor: "default",
     };
 
     return (
-      <div
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        onClick={() => {
-          setFocus(checkpoints[index].marker.position);
-        }}
-      >
+      <div ref={setNodeRef} style={style} {...attributes}>
         <div className="checkpoint-content">
           <CheckpointInfo
-            key={id}
+            key= {index}
             id={id}
             index={index}
-            openDetails={openDetails[id]}
-            toggleDetails={() => toggleDetails(id)}
-            checkpoints={checkpoints}
+            checkpoint={checkpoints[index]}
             fetchCheckpoints={fetchCheckpoints}
+            setFocus={setFocus}
+            updateCheckpoints={
+              (newCheckpoint, index) => {
+                const copy = [...checkpoints];
+                copy[index] = newCheckpoint;
+                fetchCheckpoints(copy);
+              }
+            }
           />
         </div>
 
         {/* DRAG HANDLE */}
-        {dragEnabled ? (
+        {!checkpoints.some((marker) => marker.editing) ? (
           <div>
             <div className="flex justify-center">
               <img
@@ -238,14 +205,13 @@ const Right = ({
         </div>
       ) : (
         <div className="">
-          <h1 className="mb-4">
-            You can place{" "}
-            <span className="font-bold">up to 50 checkpoints</span>.
-          </h1>
           <button
             onClick={() => {
-              setOpenDetails(Array(50).fill(false));
-              setDragEnabled(true);
+              const copyList = [...checkpoints];
+              copyList.forEach((element) => {
+                element.editing = false;
+              });
+              fetchCheckpoints(copyList);
             }}
             className="font-bold bg-transparent border-2 text-sm border-black 
               text-black rounded-xl p-2 hover:bg-blue-400 hover:border-blue-400 hover:text-white 
@@ -253,7 +219,7 @@ const Right = ({
           >
             Collapse All
           </button>
-          {!dragEnabled ? (
+          {!true ? (
             <h1 className="pr-4 text-green-600, text-sm text-center">
               Details open. Dragging, creating and deleting points is disabled{" "}
             </h1>
@@ -337,8 +303,13 @@ const Right = ({
           value={editorContent}
         ></Quill>
         <div className="flex flex-col mx-5">
-          <label className="text-lg mb-2">Difficulty:  <span className="font-bold">{difficulty}</span></label>
-          <label className="text-sm">On a scale from 0 to 100! The higher the number, the harder the challenge.</label>
+          <label className="text-lg mb-2">
+            Difficulty: <span className="font-bold">{difficulty}</span>
+          </label>
+          <label className="text-sm">
+            On a scale from 0 to 100! The higher the number, the harder the
+            challenge.
+          </label>
         </div>
         <button
           className="flex justify-center mx-auto mb-5 sticky bottom-2"
@@ -392,12 +363,12 @@ const Right = ({
             <label className="mb-1">Description of the Hunt:</label>
             <Quill
               value={editorContent}
-              onChange={(content, delta, source, editor) =>
-                setEditorContent(editor.getHTML())
-              }
+              onChange={setEditorContent}
               style={{ height: "125px" }}
             />
-          <label className="mt-16 text-lg">Difficulty:  <span className="font-bold">{difficulty}</span></label>
+            <label className="mt-16 text-lg">
+              Difficulty: <span className="font-bold">{difficulty}</span>
+            </label>
             <input
               value={difficulty}
               onChange={(e) => {
@@ -487,8 +458,19 @@ const Right = ({
             </p>
           )}
 
-          {/* BUTTON */}
-          {input}
+          <button
+            onClick={(e) => {
+              setOpen(true);
+              e.preventDefault();
+            }}
+            className="font-bold bg-transparent border-2 text-sm border-black 
+            text-black rounded-xl p-2 hover:bg-green-600
+            hover:border-green-600 hover:text-white 
+            transition duration-300"
+          >
+            View Checkpoints
+          </button>
+
           <div className="flex justify-center mt-5">
             <button
               onClick={handleSubmit}
@@ -504,12 +486,13 @@ const Right = ({
       </div>
 
       {/* DRAWER */}
-      <Drawer
-        paperProps={paperProps}
-        open={open}
-        setOpen={setOpen}
-        content={content}
-      ></Drawer>
+      { <Drawer
+          paperProps={paperProps}
+          open={open}
+          setOpen={setOpen}
+          content={content}
+        ></Drawer>
+      }
     </div>
   );
 };

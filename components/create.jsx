@@ -210,6 +210,8 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
               const copyList = [...checkpoints];
               copyList.forEach((element) => {
                 element.editing = false;
+                element.tempPlace = element.place;
+                element.tempDescribe = element.describe;
               });
               fetchCheckpoints(copyList);
             }}

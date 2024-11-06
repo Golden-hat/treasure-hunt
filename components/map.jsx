@@ -17,27 +17,28 @@ class Checkpoint {
     this.visible = false;
     this.describe = "";
     this.order = Checkpoint.order++;
-    this.place = `Checkpoint`
+    this.place = `Checkpoint`;
     this.marker = marker;
+
+    // Interface controls
+    this.dragging = false;
+    this.editing = false;
   }
 }
 
-const createCustomIcon = (number) => {
-  return L.divIcon({
+const createCustomIcon = (number) => 
+  L.divIcon({
     className: 'custom-div-icon',
     html: `<div class="number-container">${number}</div>`,
     iconSize: [30, 42],
     iconAnchor: [15, 42],
   });
-};
 
 const SearchControl = () => {
-
   const map = useMap();
 
   useEffect(() => {
     const provider = new OpenStreetMapProvider();
-
     const searchControl = new GeoSearchControl({
       provider,
       style: 'bar',
@@ -51,7 +52,6 @@ const SearchControl = () => {
     });
 
     map.addControl(searchControl);
-
     return () => map.removeControl(searchControl);
   }, [map]);
 
@@ -59,20 +59,15 @@ const SearchControl = () => {
 };
 
 const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }) => {
-
   const map = useMap();
   const Quill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
 
   const centerMap = (lat, lng, zoom = 15) => {
     map.setView([lat, lng], zoom);
-  
-    const matchingCheckpoint = checkpoints.find(
-      (checkpoint) => checkpoint.marker.position[0] === lat && checkpoint.marker.position[1] === lng
-    );
   };
-  
+
   useEffect(() => {
-    map.closePopup()
+    map.closePopup();
     centerMap(focus[0], focus[1], 19);
   }, [focus]);
 
@@ -83,8 +78,7 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
       const { lat, lng } = e.latlng;
       const newMarker = { position: [lat, lng], draggable: true };
       const newCheckpoint = new Checkpoint(newMarker);
-      const copy = [...checkpoints, newCheckpoint];
-      fetchCheckpoints(copy);
+      fetchCheckpoints([...checkpoints, newCheckpoint]);
     },
   });
 
@@ -97,12 +91,11 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
 
   const remove = (index) => {
     map.closePopup();
-
     let newCheckpoints = [...checkpoints];
     newCheckpoints.splice(index, 1);
-    newCheckpoints.forEach(element => {
+    newCheckpoints.forEach((element, i) => {
       if (element.order >= index + 1) {
-        element.order = element.order - 1;
+        element.order = i + 1;
       }
     });
 
@@ -122,11 +115,8 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
             dragend: (e) => handleMarkerDragEnd(index, e),
           }}
         >
-          <Popup
-            offset={[0, -40]}
-            maxWidth={600}
-          >
-            <div className='flex items-center justify-center flex-row mb-2 mt-4 h-fit rounded-2xl bg-[#e6e6e6] m-auto px-2 pt-4'>
+          <Popup offset={[0, -40]} maxWidth={600}>
+            <div className='flex items-center justify-center flex-row mb-2 mt-4 h-fit rounded-2xl bg-[#e6e6e6] m-auto px-4 pt-4'>
               <div className='overflow-auto mb-5 w-[300px] justify-center items-center'>
                 <div className='flex flex-col justify-center items-center mb-4'>
                   <h1 className='font-bold text-3xl font-caveat text-center px-6 mb-6'>Checkpoint Preview</h1>
@@ -140,14 +130,14 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
                 <div className="text-4xl mb-2 font-caveat break-words">{checkpoint.place}</div>
                 <label className='text-md mb-1'>Checkpoint info</label>
                 <Quill className="h-[200px] w-[350px] pr-6 mb-4" readOnly={true} modules={{ toolbar: false }} value={checkpoints[index].describe}></Quill>
-                <button disabled={!changeEnable} onClick={(e) => {
-                  e.preventDefault();
-                  remove(index);
-                }}
-                  className='font-bold bg-transparent border-2 text-sm border-black 
-                  text-black rounded-xl p-2 hover:bg-red-600
-                  hover:border-red-600 hover:text-white
-                  transition duration-150 mb-4'>
+                <button
+                  disabled={!changeEnable}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    remove(index);
+                  }}
+                  className='font-bold bg-transparent border-2 text-sm border-black text-black rounded-xl p-2 hover:bg-red-600 hover:border-red-600 hover:text-white transition duration-150 mb-4'
+                >
                   Remove Checkpoint
                 </button>
               </form>
@@ -159,31 +149,28 @@ const MapEventsHandler = ({ checkpoints, fetchCheckpoints, changeEnable, focus }
   );
 };
 
-
-const Map = ({ checkpoints, fetchCheckpoints, changeEnable, focus }) => {
-
-  return (
-    <MapContainer  doubleClickZoom={false} zoom={15} center={[51.505, -0.09]} style={{ height: "100vh", width: "100%" }}>
-      <LayersControl position="topright">
-        <LayersControl.BaseLayer checked name="OpenStreetMap">
-          <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            maxZoom={19} // Allow zooming up to level 20
-          />
-        </LayersControl.BaseLayer>
-        <LayersControl.BaseLayer name="Google Satellite">
-          <TileLayer
-            attribution='&copy; <a href="https://www.google.com/maps">Google</a>'
-            url="https://mt.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
-            maxZoom={21}
-          />
-        </LayersControl.BaseLayer>
-      </LayersControl>
-      <SearchControl />
-      <MapEventsHandler checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} focus={focus} />
-    </MapContainer>
-  );
-};
+const Map = ({ checkpoints, fetchCheckpoints, changeEnable, focus }) => (
+  <MapContainer doubleClickZoom={false} zoom={15} center={[51.505, -0.09]} style={{ height: "100vh", width: "100%" }}>
+    <LayersControl position="topright">
+      <BaseLayer checked name="OpenStreetMap">
+        <TileLayer
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={19}
+        />
+      </BaseLayer>
+      <BaseLayer name="Google Satellite">
+        <TileLayer
+          attribution='&copy; <a href="https://www.google.com/maps">Google</a>'
+          url="https://mt.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+          maxZoom={21}
+        />
+      </BaseLayer>
+    </LayersControl>
+    <SearchControl />
+    <MapEventsHandler checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} changeEnable={changeEnable} focus={focus} />
+  </MapContainer>
+);
 
 export default Map;
+

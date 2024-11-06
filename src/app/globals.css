@@ -44,13 +44,7 @@
 
 /* Hide the default close button's content */
 .leaflet-popup-close-button {
-  padding: 20px !important;
-  position: relative;
-  width: 30px;       /* Adjust width */
-  height: 30px;      /* Adjust height */
-  background: transparent;
-  border: none;
-  cursor: pointer;
+  padding: 15px !important;
 }
 
 .leaflet-popup-close-button span{
@@ -65,7 +59,7 @@
 
 /* Add custom 'X' using ::after */
 .leaflet-popup-close-button::after {
-  content: 'x';   /* Custom cross symbol */
+  content: '✕';   /* Custom cross symbol */
   font-size: 24px; /* Adjust size */
   color: black;    /* Custom color */
   position: absolute;
@@ -80,7 +74,7 @@
 }
 
 .leaflet-popup-content-wrapper{
-  padding: 15px !important;
+  padding: 5px !important;
 }
 
 .leaflet-popup-content p {

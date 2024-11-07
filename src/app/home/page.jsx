@@ -2,7 +2,7 @@
 import dynamic from 'next/dynamic';
 import Create from '../../../components/create'
 import Right_draw from '../../../components/menu_right'
-
+import Browse from '../../../components/browse'
 import { useEffect, useState } from 'react';
 import React from 'react';
 
@@ -17,16 +17,23 @@ export default function Home() {
   const [username, setUsername] = useState("")
   const [checkpoints, setCheckpoints] = useState([])
   const [focus, setFocus] = useState([39.47391, -0.37966])
+  const [mode, setMode] = useState(0)
+  const [hunts, setHunts] = useState([])
 
   const fetchCheckpoints = (childData) => {
     setCheckpoints(childData);
+  };
+
+  const fetchHunts = (childData) => {
+    console.log(childData)
+    setHunts(childData);
   };
 
   {/* MENU CONTENT */ }
   const paperProps = {
     style: {
       width:"100%",
-      maxWidth: "500px",
+      maxWidth: "600px",
       height: "100%",
       zIndex: "2",
       backgroundColor: "rgb(242, 242, 242)"
@@ -54,6 +61,10 @@ export default function Home() {
     if (index === 3) {
       handleLogout()
     }
+    if (index !== 1) {
+      setCheckpoints([])
+    }
+    setMode(index)
     setOpen(false)
   };
 
@@ -85,17 +96,31 @@ export default function Home() {
         setUsername(data.user.username)
       }
     };
+    const fetch_hunts = async () => {
+      const res = await fetch('/api/get_hunts', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      const data = await res.json();
+
+      if (data.result === "ok") {
+        setHunts(data.hunts)
+      }
+    };
     fetch_session();
+
     setCheckpoints(checkpoints)
   }, [checkpoints]);
 
   return (
     <div className="flex relative overflow-hidden h-screen">
       <div className="flex-1 overflow-hidden z-0">
-        <Map checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} focus={focus}/>
+        <Map checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} focus={focus} mode={mode} hunts={hunts} fetchHunts={fetchHunts}/>
       </div>
 
-      <div className="flex flex-col w-[500px] relative top-0 left-0 h-full bg-[#eeffe0] z-1">
+      <div className="flex flex-col w-[600px] relative top-0 left-0 h-full bg-[#eeffe0] z-1">
 
         {/* TOPBAR */}
         <div className="flex px-6 pt-6 justify-between mb-6 border-black items-center ">
@@ -112,8 +137,11 @@ export default function Home() {
         {/* MENU */}
         <Right_draw paperProps={paperProps} open={open} setOpen={setOpen} content={content}></Right_draw>
 
-        {/* CREATE MENU */}
-        <Create setFocus={setFocus} username={username} checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} />
+        {/* HOME */}
+        {mode === 0 && <Browse setFocus={setFocus} username={username} hunts={hunts} fetchHunts={fetchHunts}/>}
+
+        {/* CREATE */}
+        {mode === 1 && <Create setFocus={setFocus} username={username} checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} />}
       </div>
     </div>
   );

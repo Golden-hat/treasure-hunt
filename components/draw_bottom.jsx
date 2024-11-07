@@ -1,6 +1,6 @@
 "use client";
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-const BottomSheet = ({ paperProps, open, setOpen, content }) => {
+const BottomSheet = ({ paperProps, open, setOpen, content, auxFunction}) => {
 
   return (
     <div>
@@ -15,16 +15,12 @@ const BottomSheet = ({ paperProps, open, setOpen, content }) => {
         PaperProps={paperProps}
       >
         <div style={{paddingLeft:20, paddingRight:20}}>
-          <div style={{cursor:"pointer"}} onClick={() => setOpen(false)} className='cursor-pointer flex justify-center'>
-            <div style={{
-              width: "60px",
-              height: "5px",
-              backgroundColor: "gray",
-              border: '2px solid gray',
-              borderRadius: '0.5rem',
-              marginBottom: "10px",
-              marginTop: "20px",
-            }} />
+          <div style={{cursor:"pointer", marginTop:"20px"}} onClick={() => {setOpen(false); auxFunction()}} className='cursor-pointer flex justify-center'>
+            <img
+              src="/arrow.svg"
+              alt="Description of image"
+              className="cursor-pointer scale-[1] p-2 "
+            />
           </div>
           {content}
         </div>

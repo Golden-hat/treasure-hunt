@@ -8,18 +8,6 @@ import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-ki
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import dynamic from "next/dynamic";
-import DOMPurify from 'dompurify';
-
-class Hunt {
-  constructor(name, checkpoints, id, description) {
-    this.id = id;
-    this.checkpoints = checkpoints;
-    this.name = name;
-    this.description = description;
-    this.isQr = false;
-    this.init_location = checkpoints[0].marker.position;
-  }
-}
 
 const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
   const [qr, setQr] = useState(false);
@@ -131,7 +119,7 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
 
   const paperProps = {
     style: {
-      maxWidth: "499px",
+      maxWidth: "599px",
       height: "100%",
       marginLeft: "auto",
       marginRight: "1px",
@@ -172,6 +160,20 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
                 const copy = [...checkpoints];
                 copy[index] = newCheckpoint;
                 fetchCheckpoints(copy);
+              }
+            }
+            removeCheckpoints={
+              (index) => {
+                let newCheckpoints = [...checkpoints];
+                newCheckpoints.splice(index, 1);
+                newCheckpoints.forEach((element, i) => {
+                  if (element.order >= index + 1) {
+                    element.order = i + 1;
+                  }
+                });
+            
+                fetchCheckpoints(newCheckpoints);
+                checkpoints.order--;
               }
             }
           />
@@ -301,7 +303,10 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
         <Quill
           readOnly={true}
           modules={{ toolbar: false }}
-          style={{ height: "125px", margin: "20px" }}
+          style={{
+            height: "fit-content",
+            margin: "20px",
+          }}
           value={editorContent}
         ></Quill>
         <div className="flex flex-col mx-5">
@@ -493,6 +498,10 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
           open={open}
           setOpen={setOpen}
           content={content}
+          auxFunction={() => checkpoints.forEach(element => {
+            element.tempDescribe = element.describe;
+            element.tempPlace = element.place;
+          })}
         ></Drawer>
       }
     </div>

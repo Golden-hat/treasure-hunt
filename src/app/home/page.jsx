@@ -16,7 +16,7 @@ export default function Home() {
   const [open, setOpen] = React.useState(false);
   const [username, setUsername] = useState("")
   const [checkpoints, setCheckpoints] = useState([])
-  const [focus, setFocus] = useState([39.47391, -0.37966])
+  const [focus, setFocus] = useState([39.42858790570836,-0.41886180536852896])
   const [mode, setMode] = useState(0)
   const [hunts, setHunts] = useState([])
 

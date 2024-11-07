@@ -42,41 +42,32 @@
   align-items: center;
 }
 
-/* Hide the default close button's content */
-.leaflet-popup-close-button {
-  padding: 15px !important;
+.custom-hunt-icon {
+  background-color: #bbf7d0;
+  color: white;
+  font-family: "Caveat";
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  line-height: 30px;
+  align-items: center;
+  justify-content: center;
 }
 
 .leaflet-popup-close-button span{
   display: none;
 }
 
-/* Forcefully hide the original 'X' */
-.leaflet-popup-close-button::before {
-  content: ''; /* Completely remove the original 'X' */
-  display: none; /* Ensure the original icon is not shown */
-}
-
-/* Add custom 'X' using ::after */
-.leaflet-popup-close-button::after {
-  content: '✕';   /* Custom cross symbol */
-  font-size: 24px; /* Adjust size */
-  color: black;    /* Custom color */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* Center the custom 'X' */
-}
-
-/* Hover effect for custom cross */
-.leaflet-popup-close-button:hover::after {
-  color: red; /* Change color on hover */
-}
-
 .leaflet-popup-content-wrapper{
-  padding: 5px !important;
+  padding: 5px !important;  
+  border-radius: 100px;
 }
 
 .leaflet-popup-content p {
   margin: 0px 0 !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px 10px !important;
 }

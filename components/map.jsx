@@ -118,11 +118,11 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
     fetch_hunts();
   }, []);
 
-  const createCustomIcon = (name) =>
+  const createHuntIcon = (name) =>
     L.divIcon({
-      className: "custom-div-icon",
+      className: "custom-hunt-icon",
       html: `<div class="number-container">${name}</div>`,
-      iconSize: [30, 42],
+      iconSize:[200, 100],
       iconAnchor: [15, 42],
     });
 
@@ -147,12 +147,12 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
           <Marker
             key={index}
             position={hunt.checkpoints[0].position}
-            icon={createCustomIcon(hunt.name)}
+            icon={createHuntIcon(hunt.name)}
             draggable={false}
           >
             <Popup offset={[0, -40]} maxWidth={600}>
               <div
-                className={`overflow-auto h-[380px] mb-5 rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
+                className={`overflow-auto h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
                   expand ? "h-auto" : "max-h-[380px]"
                 }`}
               >

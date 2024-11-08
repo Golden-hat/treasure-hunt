@@ -243,106 +243,109 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
     <>
       {hunts.map((hunt, index) =>
         hunt.checkpoints[0] ? (
-          <MarkerClusterGroup
-            maxClusterRadius={0}
-            spiderfyOnMaxZoom={false}
-            zoomToBoundsOnClick={true}
-          >
-            <Marker
-              key={index}
-              position={hunt.checkpoints[0].position}
-              icon={createHuntIcon(hunt)}
-              draggable={false}
-              eventHandlers={{
-                click: () => {
-                  handleToggleDetails(hunt);
-                  console.log("Marker clicked!");
-                },
-              }}
+          <>
+            {hunt.toggleCheckpoints && renderCheckpoints(hunt)}
+
+            <MarkerClusterGroup
+              maxClusterRadius={0}
+              spiderfyOnMaxZoom={false}
+              zoomToBoundsOnClick={true}
             >
-              {hunt.toggleCheckpoints && renderCheckpoints(hunt)}
-              <Popup offset={[0, 20]} maxWidth={600}>
-                <div
-                  className={`overflow-auto h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
-                    hunt.expand ? "h-auto" : "max-h-[380px]"
-                  }`}
-                >
-                  <div className="flex flex-col justify-center items-center mb-4">
-                    <h1 className="font-caveat font-bold text-3xl text-left px-6 mb-6">
-                      Details of the hunt
-                    </h1>
-                    <div className="cursor-pointer hover:bg-[#b6b6b6] bg-[#d6d6d6] rounded-full p-20 mb-2">
-                      <img
-                        src="/add.svg"
-                        alt="Description of image"
-                        className="scale-[3]"
-                      />
-                    </div>
-                    <p className="text-xs mb-2">Click to add a banner!</p>
-                    <div className="flex flex-col items-center max-w-[80%]">
-                      <h1 className="font-caveat text-center text-5xl bold">
-                        {hunt.name}
+              <Marker
+                key={index}
+                position={hunt.checkpoints[0].position}
+                icon={createHuntIcon(hunt)}
+                draggable={false}
+                eventHandlers={{
+                  click: () => {
+                    handleToggleDetails(hunt);
+                    console.log("Marker clicked!");
+                  },
+                }}
+              >
+                <Popup offset={[0, 20]} maxWidth={600}>
+                  <div
+                    className={`overflow-auto h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
+                      hunt.expand ? "h-auto" : "max-h-[380px]"
+                    }`}
+                  >
+                    <div className="flex flex-col justify-center items-center mb-4">
+                      <h1 className="font-caveat font-bold text-3xl text-left px-6 mb-6">
+                        Details of the hunt
                       </h1>
-                      <h1 className="font-caveat text-center text-2xl italic bold text-gray-600">
-                        By
-                      </h1>
+                      <div className="cursor-pointer hover:bg-[#b6b6b6] bg-[#d6d6d6] rounded-full p-20 mb-2">
+                        <img
+                          src="/add.svg"
+                          alt="Description of image"
+                          className="scale-[3]"
+                        />
+                      </div>
+                      <p className="text-xs mb-2">Click to add a banner!</p>
+                      <div className="flex flex-col items-center max-w-[80%]">
+                        <h1 className="font-caveat text-center text-5xl bold">
+                          {hunt.name}
+                        </h1>
+                        <h1 className="font-caveat text-center text-2xl italic bold text-gray-600">
+                          By
+                        </h1>
+                      </div>
                     </div>
-                  </div>
-                  <Quill
-                    readOnly={true}
-                    modules={{ toolbar: false }}
-                    style={{
-                      maxHeight: !hunt.expand ? "fit-content" : "450px",
-                      overflowY: "auto",
-                      margin: "20px",
-                    }}
-                    value={hunt.description}
-                  ></Quill>
-                  <div className="flex flex-col mx-5">
-                    <label className="text-lg mb-2">
-                      Difficulty: <span className="font-bold"> </span>
-                    </label>
-                    <label className="text-sm">
-                      On a scale from 0 to 100! The higher the number, the
-                      harder the challenge.
-                    </label>
-                    <button
-                      onClick={() => {
-                        map.closePopup();
-                        handleToggleCheckpoints(hunt);
+                    <Quill
+                      readOnly={true}
+                      modules={{ toolbar: false }}
+                      style={{
+                        maxHeight: !hunt.expand ? "fit-content" : "450px",
+                        overflowY: "auto",
+                        margin: "20px",
                       }}
-                      className="font-bold bg-transparent border-2 text-sm border-black 
+                      value={hunt.description}
+                    ></Quill>
+                    <div className="flex flex-col mx-5">
+                      <label className="text-lg mb-2">
+                        Difficulty: <span className="font-bold"> </span>
+                      </label>
+                      <label className="text-sm">
+                        On a scale from 0 to 100! The higher the number, the
+                        harder the challenge.
+                      </label>
+                      <button
+                        onClick={() => {
+                          map.closePopup();
+                          handleToggleCheckpoints(hunt);
+                        }}
+                        className="font-bold bg-transparent border-2 text-sm border-black 
                   text-black rounded-xl p-2 hover:bg-green-600
                   hover:border-green-600 hover:text-white 
                   transition duration-300 w-full px-20 mt-5 mb-5"
+                      >
+                        {hunt.toggleCheckpoints ? "Hide" : "View"} Checkpoints
+                      </button>
+                    </div>
+                    <button
+                      className="flex justify-center mx-auto mb-5 sticky bottom-2"
+                      onClick={() => {
+                        handleExpandToggle(hunt);
+                      }}
                     >
-                      {hunt.toggleCheckpoints ? "Hide" : "View"} Checkpoints
+                      {!hunt.expand ? (
+                        <img
+                          src="/arrow.svg"
+                          alt="Description of image"
+                          className="cursor-pointer scale-[1] p-2"
+                        />
+                      ) : (
+                        <img
+                          src="/arrow.svg"
+                          alt="Description of image"
+                          className="rotate-180 cursor-pointer scale-[1] p-2"
+                        />
+                      )}
                     </button>
                   </div>
-                  <button
-                    className="flex justify-center mx-auto mb-5 sticky bottom-2"
-                    onClick={() => {
-                      handleExpandToggle(hunt);
-                    }}
-                  >
-                    {!hunt.expand ? (
-                      <img
-                        src="/arrow.svg"
-                        alt="Description of image"
-                        className="cursor-pointer scale-[1] p-2"
-                      />
-                    ) : (
-                      <img
-                        src="/arrow.svg"
-                        alt="Description of image"
-                        className="rotate-180 cursor-pointer scale-[1] p-2"
-                      />
-                    )}
-                  </button>
-                </div>
-              </Popup>
-            </Marker>
-          </MarkerClusterGroup>
+                </Popup>
+              </Marker>
+            </MarkerClusterGroup>
+          </>
         ) : null
       )}
     </>

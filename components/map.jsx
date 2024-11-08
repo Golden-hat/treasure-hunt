@@ -260,6 +260,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
                 },
               }}
             >
+              {hunt.toggleCheckpoints && renderCheckpoints(hunt)}
               <Popup offset={[0, 20]} maxWidth={600}>
                 <div
                   className={`overflow-auto h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${

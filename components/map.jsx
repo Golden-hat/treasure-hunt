@@ -245,9 +245,9 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
         hunt.checkpoints[0] ? (
           <>
             {hunt.toggleCheckpoints && renderCheckpoints(hunt)}
-
             <MarkerClusterGroup
-              maxClusterRadius={0}
+              key={index}
+              maxClusterRadius={40}
               spiderfyOnMaxZoom={false}
               zoomToBoundsOnClick={true}
             >

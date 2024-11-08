@@ -6,7 +6,18 @@ import jwt from 'jsonwebtoken';
 export async function GET(request) {
 
   try {
-    const query = await sql`SELECT * FROM hunt`;
+    const query = await sql`
+      SELECT
+        id,
+        name,
+        description,
+        position_lat,
+        position_lng,
+        public,
+        author
+      FROM "hunt"
+    `;
+    console.log(query)
     return NextResponse.json({ result: "ok", hunts: query.rows });
   } catch (error) {
     console.error('Hunt Fetch Error:', error);

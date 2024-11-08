@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import ReactDOMServer from "react-dom/server";
 import {
   MapContainer,
   TileLayer,
@@ -41,6 +42,10 @@ class Hunt {
     this.checkpoints = checkpoints;
     this.name = name;
     this.description = description;
+
+    // Interface and edit controls
+    this.toggleDetails = false;
+    this.expand = false;
   }
 }
 
@@ -70,7 +75,6 @@ const SearchControl = () => {
 
 const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
   const map = useMap();
-  const [expand, setExpand] = useState(false);
 
   useEffect(() => {
     const fetch_hunts = async () => {
@@ -86,12 +90,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
 
       await Promise.all(
         hunt_data.hunts.map(async (hunt_) => {
-          let h = new Hunt(
-            hunt_.name,
-            [],
-            hunt_.id,
-            hunt_.description
-          );
+          let h = new Hunt(hunt_.name, [], hunt_.id, hunt_.description);
 
           const res = await fetch(`/api/get_checkpoints?id=${hunt_.id}`, {
             method: "GET",
@@ -118,11 +117,39 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
     fetch_hunts();
   }, []);
 
-  const createHuntIcon = (name) =>
+  const hunt_marker_design = (hunt) => (
+    <div className="transform translate-x-[-50%] flex-col items-center justify-center">
+      <div className="overflow-x-auto h-[60px] rounded-2xl bg-[#e6e6e6] border border-gray-400 px-2 pt-2 ">
+        <marquee
+          behavior="scroll"
+          direction="left"
+          className="font-caveat text-center text-4xl bold"
+          scrollamount="12"
+        >
+          {hunt.name}
+        </marquee>
+      </div>
+      <div className="rounded-b-2xl m-auto bg-[#e6e6e6] w-[150px] px-2">
+        <p className="text-center text-xs font-bold ">
+          Click to {hunt.toggleDetails ? "hide" : "see"} details
+        </p>
+      </div>
+    </div>
+  );
+
+  const cpIcon = (number) =>
     L.divIcon({
+      className: "custom-div-icon",
+      html: `<div class="number-container">${number}</div>`,
+      iconSize: [30, 42],
+      iconAnchor: [15, 42],
+    });
+
+  const createHuntIcon = (hunt) =>
+    L.divIcon({
+      html: ReactDOMServer.renderToString(hunt_marker_design(hunt)),
       className: "custom-hunt-icon",
-      html: `<div class="number-container">${name}</div>`,
-      iconSize:[200, 100],
+      iconSize: [300, 40],
       iconAnchor: [15, 42],
     });
 
@@ -140,20 +167,94 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
     centerMap(focus[0], focus[1], 19);
   }, [focus]);
 
+  // Handle hunt state changes
+  const handleToggleDetails = (hunt) => {
+    const updatedHunts = hunts.map((h) =>
+      h.id === hunt.id ? { ...h, toggleDetails: !h.toggleDetails } : h
+    );
+    fetchHunts(updatedHunts);
+  };
+
+  const handleExpandToggle = (hunt) => {
+    const updatedHunts = hunts.map((h) =>
+      h.id === hunt.id ? { ...h, expand: !h.expand } : h
+    );
+    fetchHunts(updatedHunts);
+  };
+
+  const renderCheckpoints = (hunt) => {
+    const checkpoints = hunt.checkpoints.map((cp) => (
+      <Marker
+        key={cp.order}
+        position={cp.position}
+        icon={cpIcon(cp.order)}
+        draggable={false}
+        zIndexOffset={1000}
+        eventHandlers={{
+          click: () => {
+            handleToggleDetails(hunt);
+            console.log("Marker clicked!");
+          },
+        }} 
+      >
+        <Popup offset={[0, -40]} maxWidth={600}>
+          <div className="flex items-center justify-center flex-col mb-2 mt-4 h-fit rounded-2xl bg-[#e6e6e6] m-auto px-4 pt-4">
+            <div className="overflow-auto mb-5 w-[300px] justify-center items-center">
+              <div className="flex flex-col justify-center items-center">
+                <h1 className="font-bold text-3xl font-caveat text-center px-6 mb-6">
+                  Checkpoint Preview
+                </h1>
+                <div className="cursor-pointer hover:bg-[#c6c6c6] bg-[#d6d6d6] rounded-full p-20 mb-2">
+                  <img
+                    src="/add.svg"
+                    alt="Description of image"
+                    className="scale-[3]"
+                  />
+                </div>
+              </div>
+            </div>
+            <form className="flex flex-col px-3 w-[350px]">
+              <label className="font-bold mb-1">Name of the Checkpoint:</label>
+              <div className="text-4xl mb-2 font-caveat break-words">
+                {cp.name}
+              </div>
+              <label className="text-md mb-1">Checkpoint info</label>
+              <Quill
+                className="h-[200px] w-[350px] pr-6 mb-4"
+                readOnly={true}
+                modules={{ toolbar: false }}
+                value={cp.description}
+              ></Quill>
+            </form>
+          </div>
+        </Popup>
+      </Marker>
+    ));
+    return checkpoints;
+  };
+
   return (
     <>
-      {hunts.map((hunt, index) => (
+      {hunts.map((hunt, index) =>
         hunt.checkpoints[0] ? (
           <Marker
             key={index}
             position={hunt.checkpoints[0].position}
-            icon={createHuntIcon(hunt.name)}
+            icon={createHuntIcon(hunt)}
             draggable={false}
+            eventHandlers={{
+              click: () => {
+                handleToggleDetails(hunt);
+                renderCheckpoints(hunt);
+                console.log("Marker clicked!");
+              },
+            }}
           >
+            {hunt.toggleDetails && renderCheckpoints(hunt)}
             <Popup offset={[0, -40]} maxWidth={600}>
               <div
                 className={`overflow-auto h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
-                  expand ? "h-auto" : "max-h-[380px]"
+                  hunt.expand ? "h-auto" : "max-h-[380px]"
                 }`}
               >
                 <div className="flex flex-col justify-center items-center mb-4">
@@ -169,7 +270,9 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
                   </div>
                   <p className="text-xs mb-2">Click to add a banner!</p>
                   <div className="flex flex-col items-center max-w-[80%]">
-                    <h1 className="font-caveat text-center text-5xl bold"></h1>
+                    <h1 className="font-caveat text-center text-5xl bold">
+                      {hunt.name}
+                    </h1>
                     <h1 className="font-caveat text-center text-2xl italic bold text-gray-600">
                       By
                     </h1>
@@ -179,7 +282,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
                   readOnly={true}
                   modules={{ toolbar: false }}
                   style={{
-                    maxHeight: !expand ? "fit-content" : "450px",
+                    maxHeight: !hunt.expand ? "fit-content" : "450px",
                     overflowY: "auto",
                     margin: "20px",
                   }}
@@ -196,9 +299,9 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
                 </div>
                 <button
                   className="flex justify-center mx-auto mb-5 sticky bottom-2"
-                  onClick={() => setExpand(!expand)}
+                  onClick={() => handleExpandToggle(hunt)}
                 >
-                  {!expand ? (
+                  {!hunt.expand ? (
                     <img
                       src="/arrow.svg"
                       alt="Description of image"
@@ -216,11 +319,10 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
             </Popup>
           </Marker>
         ) : null
-      ))}
+      )}
     </>
   );
 };
-
 
 const CreateEventsHandler = ({ checkpoints, fetchCheckpoints, focus }) => {
   const map = useMap();
@@ -318,7 +420,14 @@ const CreateEventsHandler = ({ checkpoints, fetchCheckpoints, focus }) => {
   );
 };
 
-const Map = ({ checkpoints, fetchCheckpoints, focus, mode, hunts, fetchHunts}) => (
+const Map = ({
+  checkpoints,
+  fetchCheckpoints,
+  focus,
+  mode,
+  hunts,
+  fetchHunts,
+}) => (
   <MapContainer
     doubleClickZoom={false}
     zoom={15}

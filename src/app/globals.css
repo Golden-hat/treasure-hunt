@@ -40,19 +40,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.custom-hunt-icon {
-  background-color: #bbf7d0;
-  color: white;
-  font-family: "Caveat";
-  font-weight: bold;
-  text-align: center;
-  border: 1px solid black;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  line-height: 30px;
-  align-items: center;
-  justify-content: center;
 }
 
 .leaflet-popup-close-button span{
@@ -70,4 +58,13 @@
 
 .leaflet-popup-content {
   margin: 10px 10px !important;
+}
+
+.custom-cluster-icon {
+  background-color: rgba(0, 123, 255, 0.6);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

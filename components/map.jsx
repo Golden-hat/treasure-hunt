@@ -45,6 +45,7 @@ class Hunt {
 
     // Interface and edit controls
     this.toggleDetails = false;
+    this.toggleCheckpoints = false;
     this.expand = false;
   }
 }
@@ -106,19 +107,16 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
             description: checkpoint.description,
             position: [checkpoint.position_lat, checkpoint.position_lng],
           }));
-
           aux.push(h);
         })
       );
-
       fetchHunts(aux);
     };
-
     fetch_hunts();
   }, []);
 
   const hunt_marker_design = (hunt) => (
-    <div className="transform translate-x-[-50%] flex-col items-center justify-center">
+    <div className="transform translate-x-[-50%] translate-y-[75%] flex-col items-center justify-center">
       <div className="overflow-x-auto h-[60px] rounded-2xl bg-[#e6e6e6] border border-gray-400 px-2 pt-2 ">
         <marquee
           behavior="scroll"
@@ -131,7 +129,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
       </div>
       <div className="rounded-b-2xl m-auto bg-[#e6e6e6] w-[150px] px-2">
         <p className="text-center text-xs font-bold ">
-          Click to {hunt.toggleDetails ? "hide" : "see"} details
+          Click to toggle details.
         </p>
       </div>
     </div>
@@ -167,11 +165,18 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
     centerMap(focus[0], focus[1], 19);
   }, [focus]);
 
-  // Handle hunt state changes
+  const handleToggleCheckpoints = (hunt) => {
+    const updatedHunts = hunts.map((h) =>
+      h.id === hunt.id ? { ...h, toggleCheckpoints: !h.toggleCheckpoints } : h
+    );
+    fetchHunts(updatedHunts);
+  };
+
   const handleToggleDetails = (hunt) => {
     const updatedHunts = hunts.map((h) =>
       h.id === hunt.id ? { ...h, toggleDetails: !h.toggleDetails } : h
     );
+
     fetchHunts(updatedHunts);
   };
 
@@ -192,7 +197,6 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
         zIndexOffset={1000}
         eventHandlers={{
           click: () => {
-            handleToggleDetails(hunt);
             console.log("Marker clicked!");
           },
         }} 
@@ -202,7 +206,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
             <div className="overflow-auto mb-5 w-[300px] justify-center items-center">
               <div className="flex flex-col justify-center items-center">
                 <h1 className="font-bold text-3xl font-caveat text-center px-6 mb-6">
-                  Checkpoint Preview
+                  Checkpoint Details
                 </h1>
                 <div className="cursor-pointer hover:bg-[#c6c6c6] bg-[#d6d6d6] rounded-full p-20 mb-2">
                   <img
@@ -245,13 +249,12 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
             eventHandlers={{
               click: () => {
                 handleToggleDetails(hunt);
-                renderCheckpoints(hunt);
                 console.log("Marker clicked!");
               },
             }}
           >
-            {hunt.toggleDetails && renderCheckpoints(hunt)}
-            <Popup offset={[0, -40]} maxWidth={600}>
+            {hunt.toggleCheckpoints && renderCheckpoints(hunt)}
+            <Popup offset={[0, 20]} maxWidth={600}>
               <div
                 className={`overflow-auto h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
                   hunt.expand ? "h-auto" : "max-h-[380px]"
@@ -259,7 +262,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
               >
                 <div className="flex flex-col justify-center items-center mb-4">
                   <h1 className="font-caveat font-bold text-3xl text-left px-6 mb-6">
-                    Details Preview
+                    Details of the hunt
                   </h1>
                   <div className="cursor-pointer hover:bg-[#b6b6b6] bg-[#d6d6d6] rounded-full p-20 mb-2">
                     <img
@@ -296,10 +299,19 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
                     On a scale from 0 to 100! The higher the number, the harder
                     the challenge.
                   </label>
+                  <button
+                  onClick={() => {map.closePopup(); handleToggleCheckpoints(hunt);}}
+                  className="font-bold bg-transparent border-2 text-sm border-black 
+                  text-black rounded-xl p-2 hover:bg-green-600
+                  hover:border-green-600 hover:text-white 
+                  transition duration-300 w-full px-20 mt-5 mb-5"
+                  >
+                  {hunt.toggleCheckpoints ? "Hide" : "View"} Checkpoints
+                </button>
                 </div>
                 <button
                   className="flex justify-center mx-auto mb-5 sticky bottom-2"
-                  onClick={() => handleExpandToggle(hunt)}
+                  onClick={() => {handleExpandToggle(hunt);}}
                 >
                   {!hunt.expand ? (
                     <img

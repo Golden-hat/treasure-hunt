@@ -400,7 +400,32 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
                 type="checkbox"
                 className="peer scale-[1.4] sr-only"
               />
-              <div className="scale-[1.2] mr-4 peer h-4 w-11 rounded border bg-slate-400 after:absolute after:-top-[5px] after:left-[-2px] after:h-6 after:w-6 after:rounded-md after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-focus:ring-green-300"></div>
+              <div
+                className="
+                  scale-[1.2] 
+                  mr-4 
+                  peer 
+                  h-4 
+                  w-11 
+                  rounded 
+                  border 
+                  bg-slate-400 
+                  after:absolute 
+                  after:-top-[5px] 
+                  after:left-[-2px] 
+                  after:h-6 
+                  after:w-6 
+                  after:rounded-md 
+                  after:border 
+                  after:border-gray-300 
+                  after:bg-white 
+                  after:transition-all 
+                  after:content-[''] 
+                  peer-checked:bg-green-600 
+                  peer-checked:after:translate-x-full 
+                  peer-focus:ring-green-300
+                "
+              ></div>
               {qr ? (
                 <h1 className="font-bold">QR Hunt</h1>
               ) : (
@@ -415,7 +440,32 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
                 type="checkbox"
                 className="peer scale-[1.4] sr-only"
               />
-              <div className="scale-[1.2] mr-4 peer h-4 w-11 rounded border bg-slate-400 after:absolute after:-top-[5px] after:left-[-2px] after:h-6 after:w-6 after:rounded-md after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-focus:ring-green-300"></div>
+              <div
+                className="
+                  scale-[1.2] 
+                  mr-4 
+                  peer 
+                  h-4 
+                  w-11 
+                  rounded 
+                  border 
+                  bg-slate-400 
+                  after:absolute 
+                  after:-top-[5px] 
+                  after:left-[-2px] 
+                  after:h-6 
+                  after:w-6 
+                  after:rounded-md 
+                  after:border 
+                  after:border-gray-300 
+                  after:bg-white 
+                  after:transition-all 
+                  after:content-[''] 
+                  peer-checked:bg-green-600 
+                  peer-checked:after:translate-x-full 
+                  peer-focus:ring-green-300
+                "
+              ></div>
               {isPublic ? (
                 <h1 className="font-bold">Public</h1>
               ) : (
@@ -481,7 +531,14 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
           <div className="flex justify-center mt-5">
             <button
               onClick={handleSubmit}
-              className="flex justify-center font-caveat font-bold align-center w-full items-center text-3xl bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+              className={
+                "flex justify-center font-caveat font-bold " +
+                "align-center w-full items-center text-3xl " +
+                "bg-green-600 text-white py-2 px-4 rounded-lg " +
+                "hover:bg-green-700 focus:outline-none " +
+                "focus:ring-2 focus:ring-green-400 " +
+                "focus:ring-opacity-50"
+              }
             >
               {loading ? <div className="spinner"></div> : "Upload Hunt"}
             </button>

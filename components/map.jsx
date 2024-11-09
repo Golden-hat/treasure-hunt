@@ -114,19 +114,14 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
       fetchHunts(aux);
     };
     fetch_hunts();
-  }, []);
+  }, [focus]);
 
   const hunt_marker_design = (hunt) => (
     <div className="transform translate-x-[-50%] translate-y-[75%] flex-col items-center justify-center">
-      <div className="overflow-x-auto h-[60px] rounded-2xl bg-[#e6e6e6] border border-gray-400 px-2 pt-2 ">
-        <marquee
-          behavior="scroll"
-          direction="left"
-          className="font-caveat text-center text-4xl bold"
-          scrollamount="12"
-        >
-          {hunt.name}
-        </marquee>
+      <div className="overflow-hidden h-[60px] rounded-2xl bg-[#e6e6e6] border border-gray-400 px-2">
+        <div className="marquee">
+          <span className="marquee-text">{hunt.name}</span>
+        </div>
       </div>
       <div className="rounded-b-2xl m-auto bg-[#e6e6e6] w-[150px] px-2">
         <p className="text-center text-xs font-bold ">
@@ -148,7 +143,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
     L.divIcon({
       html: ReactDOMServer.renderToString(hunt_marker_design(hunt)),
       className: "custom-hunt-icon",
-      iconSize: [300, 40],
+      iconSize: [250, 40],
       iconAnchor: [15, 42],
     });
 
@@ -195,7 +190,6 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
         position={cp.position}
         icon={cpIcon(cp.order)}
         draggable={false}
-        shouldCluster={false}
         zIndexOffset={1000}
         eventHandlers={{
           click: () => {
@@ -226,7 +220,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
               </div>
               <label className="text-md mb-1">Checkpoint info</label>
               <Quill
-                className="h-[200px] w-[350px] pr-6 mb-4"
+                className="h-fit w-[350px] pr-6 mb-4"
                 readOnly={true}
                 modules={{ toolbar: false }}
                 value={cp.description}
@@ -241,17 +235,15 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
 
   return (
     <>
-      {hunts.map((hunt, index) =>
-        hunt.checkpoints[0] ? (
-          <>
-            {hunt.toggleCheckpoints && renderCheckpoints(hunt)}
-            <MarkerClusterGroup
-              key={index}
-              maxClusterRadius={40}
-              spiderfyOnMaxZoom={false}
-              zoomToBoundsOnClick={true}
-            >
+      {hunts.map((hunt, index) => (
+        <div key={index}>{hunt.toggleCheckpoints && renderCheckpoints(hunt)}</div>
+      ))}
+      <MarkerClusterGroup>
+        {hunts.map((hunt, index) =>
+          hunt.checkpoints[0] ? (
+            <div key={index}>
               <Marker
+                maxClusteRadius={100}
                 key={index}
                 position={hunt.checkpoints[0].position}
                 icon={createHuntIcon(hunt)}
@@ -344,10 +336,10 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
                   </div>
                 </Popup>
               </Marker>
-            </MarkerClusterGroup>
-          </>
-        ) : null
-      )}
+            </div>
+          ) : null
+        )}
+      </MarkerClusterGroup>
     </>
   );
 };
@@ -404,7 +396,7 @@ const CreateEventsHandler = ({ checkpoints, fetchCheckpoints, focus }) => {
           key={index}
           position={checkpoint.marker.position}
           icon={createCustomIcon(checkpoints[index].order)}
-          draggable={true}
+          draggable={false}
           eventHandlers={{
             dragend: (e) => handleMarkerDragEnd(index, e),
           }}

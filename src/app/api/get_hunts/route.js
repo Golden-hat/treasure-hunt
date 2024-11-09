@@ -4,21 +4,20 @@ import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
 export async function GET(request) {
-
   try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id') || 0; 
+
     const query = await sql`
-      SELECT
-        id,
-        name,
-        description,
-        position_lat,
-        position_lng,
-        public,
-        author
+      SELECT *
       FROM "hunt"
-    `;
-    console.log(query)
-    return NextResponse.json({ result: "ok", hunts: query.rows });
+      WHERE "id" > ${id}`;
+
+    const response = NextResponse.json({ result: "ok", hunts: query.rows });
+
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+
+    return response;
   } catch (error) {
     console.error('Hunt Fetch Error:', error);
     return NextResponse.json({ result: "ko" });

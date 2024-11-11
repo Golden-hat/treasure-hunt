@@ -1,31 +1,189 @@
 "use client";
-import Drawer from './draw_bottom';
-import CheckpointInfo from './cp_info';
-import React, { useState, useMemo, useEffect } from 'react';
-import 'react-quill/dist/quill.snow.css';
-import { closestCenter, DndContext } from '@dnd-kit/core';
-import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import Drawer from "./draw_bottom";
+import CheckpointInfo from "./cp_info_non_edit";
+import React, { useState, useMemo, useEffect } from "react";
+import "react-quill/dist/quill.snow.css";
+import { closestCenter, DndContext } from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import dynamic from "next/dynamic";
 
-class Hunt {
-  constructor(name, checkpoints, id, description) {
-    this.id = id;
-    this.checkpoints = checkpoints;
-    this.name = name;
-    this.description = description;
-    this.isQr = false;
-    this.init_location = checkpoints[0].marker.position;
-  }
-}
+const Right = ({
+  setFocus,
+  selectedHunt,
+  fetchSelectedHunt
+}) => {
 
-const Right = ({ username, hunts }) => {
+  const Quill = useMemo(
+    () => dynamic(() => import("react-quill"), { ssr: false }),
+    []
+  );
+
+  const [expand, setExpand] = useState(false);
+
+  const DraggableCheckpoint = ({ id, checkpoints, index }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useSortable({ id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      paddingTop: "16px",
+      paddingLeft: "16px",
+      paddingRight: "16px",
+      margin: "8px 0",
+      background: "lightgray",
+      borderRadius: "4px",
+      cursor: "default",
+    };
+
+    return (
+      <div ref={setNodeRef} style={style} {...attributes}>
+        <div className="checkpoint-content">
+          <CheckpointInfo
+            key={index}
+            id={id}
+            index={index}
+            checkpoint={checkpoints[index]}
+            setFocus={setFocus}
+          />
+        </div>
+        <div className="mb-[34px]"></div>
+      </div>
+    );
+  };
+
+  const hunt = (
+    <>
+      {selectedHunt !== null && (
+        <div
+          className={`overflow-auto mb-5 rounded-2xl bg-[#d6d6d6] mt-10 px-2 pt-6 ${
+            expand ? "h-auto" : "max-h-[450px]"
+          }`}
+        >
+          <div className="flex flex-col justify-center items-center mb-4">
+            <div className="cursor-pointer hover:bg-[#b6b6b6] bg-[#c6c6c6]  rounded-full p-20 mb-2">
+              <img
+                src="/add.svg"
+                alt="Description of image"
+                className="scale-[3]"
+              />
+            </div>
+            <p className="text-xs mb-2">Click to add a banner!</p>
+            <div className="flex flex-col items-center max-w-[80%]">
+              <h1 className="font-caveat text-center text-5xl bold">
+                {selectedHunt.name || ""}
+              </h1>
+              <h1 className="font-caveat text-center text-2xl italic bold text-gray-600">
+                By
+              </h1>
+            </div>
+          </div>
+          <Quill
+            readOnly={true}
+            modules={{ toolbar: false }}
+            style={{
+              height: "fit-content",
+              margin: "20px",
+            }}
+            value={selectedHunt.description || ""}
+          ></Quill>
+          <div className="flex flex-col mx-5">
+            <label className="text-lg mb-2">
+              Difficulty:{" "}
+              <span className="font-bold">
+                {selectedHunt.difficulty || "N/A"}
+              </span>
+            </label>
+            <label className="text-sm">
+              On a scale from 0 to 100! The higher the number, the harder the
+              challenge.
+            </label>
+          </div>
+          <button
+            className="flex justify-center mx-auto mb-5 sticky bottom-2"
+            onClick={() => setExpand(!expand)}
+          >
+            {!expand ? (
+              <img
+                src="/arrow.svg"
+                alt="Description of image"
+                className="cursor-pointer scale-[1] p-2"
+              />
+            ) : (
+              <img
+                src="/arrow.svg"
+                alt="Description of image"
+                className="rotate-180 cursor-pointer scale-[1] p-2"
+              />
+            )}
+          </button>
+        </div>
+      )}
+    </>
+  );
+
+  const content = (
+    <>
+      <div className="flex flex-row items-center justify-between">
+        <h3 className="text-2xl font-bold mt-2">Checkpoint View</h3>
+        {selectedHunt !== null && (
+          <button
+            onClick={() => {
+              fetchSelectedHunt(null);
+            }}
+            className="font-bold bg-transparent border-2 text-sm border-black 
+              text-black rounded-xl p-2 hover:bg-blue-400 hover:border-blue-400 hover:text-white 
+              transition duration-100 mt-2"
+          >
+            Deselect Hunt
+          </button>
+        )}
+      </div>
+      {selectedHunt === null ? (
+        <div className="flex justify-center">
+          <img src="/no_selection.svg" alt="No checkpoints" className="w-[80%]" />
+        </div>
+      ) : (
+        <div className="">
+          <div className="mt-4 flex flex-col overflow-y-auto max-h-[50vh]">
+            <div className="">
+              <DndContext collisionDetection={closestCenter}>
+                <SortableContext
+                  items={selectedHunt.checkpoints.map((cp) => cp.order)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="flex flex-col">
+                    {selectedHunt.checkpoints
+                      .map((checkpoint, index) => (
+                        <DraggableCheckpoint
+                          disabled
+                          index={index}
+                          key={index}
+                          id={checkpoint.id}
+                          checkpoints={selectedHunt.checkpoints}
+                        />
+                      ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+
   return (
     <div className="overflow-auto px-6 relative h-screen">
       <div className="mb-6 rounded-2xl text-center bg-[#e6e6e6] p-6">
         <h1 className="font-bold text-6xl mb-5 font-caveat">
-          Latest Hunts in your Area!
+          Hunts in your Area!
         </h1>
         <div>
           <span className="text-lg">
@@ -72,8 +230,10 @@ const Right = ({ username, hunts }) => {
               </svg>
             </button>
           </div>
+          {hunt}
         </div>
       </div>
+      <div className="mb-6 rounded-2xl bg-[#e6e6e6] p-6">{content}</div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, use } from "react";
 import ReactDOMServer from "react-dom/server";
 import {
   MapContainer,
@@ -22,11 +22,11 @@ const { BaseLayer } = LayersControl;
 class Checkpoint {
   static id = 1;
   static order = 1;
-  constructor(marker) {
+  constructor(marker, { description = "", order = Checkpoint.order++, name = `Checkpoint` } = {}) {
     this.id = Checkpoint.id++;
-    this.describe = "";
-    this.order = Checkpoint.order++;
-    this.place = `Checkpoint`;
+    this.description = description;
+    this.order = order;
+    this.name = name;
     this.marker = marker;
 
     // Interface and edit controls
@@ -43,11 +43,6 @@ class Hunt {
     this.checkpoints = checkpoints;
     this.name = name;
     this.description = description;
-
-    // Interface and edit controls
-    this.toggleDetails = false;
-    this.toggleCheckpoints = false;
-    this.expand = false;
   }
 }
 
@@ -75,8 +70,11 @@ const SearchControl = () => {
   return null;
 };
 
-const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
+const BrowseEventHandler = ({ focus, hunts, fetchHunts, selectedHunt, fetchSelectedHunt }) => {
   const map = useMap();
+
+  const [selected, setSelectedHunt] = useState(null);
+  const [expanded, setExpandedToggle] = useState(false);
 
   useEffect(() => {
     const fetch_hunts = async () => {
@@ -102,25 +100,32 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
           });
           const checkpoint_data = await res.json();
 
-          h.checkpoints = checkpoint_data.checkpoints.map((checkpoint) => ({
-            order: checkpoint.order,
-            name: checkpoint.name,
-            description: checkpoint.description,
-            position: [checkpoint.position_lat, checkpoint.position_lng],
-          }));
+          h.checkpoints = checkpoint_data.checkpoints.map((checkpoint) =>
+            new Checkpoint(
+              { position: [checkpoint.position_lat, checkpoint.position_lng] },
+              {
+                order: checkpoint.order,
+                name: checkpoint.name,
+                description: checkpoint.description,
+              }
+            )
+          );
           aux.push(h);
         })
       );
       fetchHunts(aux);
     };
     fetch_hunts();
-  }, [focus]);
+  }, []);
 
-  const hunt_marker_design = (hunt) => (
-    <div className="transform translate-x-[-50%] translate-y-[75%] flex-col items-center justify-center">
+  const hunt_marker_design = (hunt_name) => (
+    <div
+      className="transform translate-x-[-50%] translate-y-[-125%] flex-col items-center justify-center"
+      key={hunt_name}
+    >
       <div className="overflow-hidden h-[60px] rounded-2xl bg-[#e6e6e6] border border-gray-400 px-2">
         <div className="marquee">
-          <span className="marquee-text">{hunt.name}</span>
+          <span className="marquee-text">{hunt_name}</span>
         </div>
       </div>
       <div className="rounded-b-2xl m-auto bg-[#e6e6e6] w-[150px] px-2">
@@ -141,7 +146,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
 
   const createHuntIcon = (hunt) =>
     L.divIcon({
-      html: ReactDOMServer.renderToString(hunt_marker_design(hunt)),
+      html: ReactDOMServer.renderToString(hunt_marker_design(hunt.name)),
       className: "custom-hunt-icon",
       iconSize: [250, 40],
       iconAnchor: [15, 42],
@@ -161,71 +166,76 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
     centerMap(focus[0], focus[1], 19);
   }, [focus]);
 
-  const handleToggleCheckpoints = (hunt) => {
-    const updatedHunts = hunts.map((h) =>
-      h.id === hunt.id ? { ...h, toggleCheckpoints: !h.toggleCheckpoints } : h
-    );
-    fetchHunts(updatedHunts);
-  };
-
-  const handleToggleDetails = (hunt) => {
-    const updatedHunts = hunts.map((h) =>
-      h.id === hunt.id ? { ...h, toggleDetails: !h.toggleDetails } : h
-    );
-
-    fetchHunts(updatedHunts);
-  };
-
-  const handleExpandToggle = (hunt) => {
-    const updatedHunts = hunts.map((h) =>
-      h.id === hunt.id ? { ...h, expand: !h.expand } : h
-    );
-    fetchHunts(updatedHunts);
-  };
+  useEffect(() => {
+    setSelectedHunt(selectedHunt)
+  }, [selectedHunt]);
 
   const renderCheckpoints = (hunt) => {
     const checkpoints = hunt.checkpoints.map((cp) => (
       <Marker
-        key={cp.order}
-        position={cp.position}
+        key={hunt.id + cp.name}
+        position={cp.marker.position}
         icon={cpIcon(cp.order)}
         draggable={false}
         zIndexOffset={1000}
         eventHandlers={{
-          click: () => {
-            console.log("Marker clicked!");
-          },
+          click: () => {},
         }}
       >
         <Popup offset={[0, -40]} maxWidth={600}>
-          <div className="flex items-center justify-center flex-col mb-2 mt-4 h-fit rounded-2xl bg-[#e6e6e6] m-auto px-4 pt-4">
-            <div className="overflow-auto mb-5 w-[300px] justify-center items-center">
-              <div className="flex flex-col justify-center items-center">
-                <h1 className="font-bold text-3xl font-caveat text-center px-6 mb-6">
-                  Checkpoint Details
+          <div
+            className={`overflow-auto w-[600px] h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
+              expanded ? "h-auto" : "max-h-[380px]"
+            }`}
+          >
+            <div className="flex flex-col justify-center items-center mb-4">
+              <h1 className="font-caveat font-bold text-3xl text-left px-6 mb-6">
+                Details of the Checkpoint
+              </h1>
+              <div className="cursor-pointer hover:bg-[#b6b6b6] bg-[#d6d6d6] rounded-full p-20 mb-2">
+                <img
+                  src="/add.svg"
+                  alt="Description of image"
+                  className="scale-[3]"
+                />
+              </div>
+              <p className="text-xs mb-2">Click to add a banner!</p>
+              <div className="flex flex-col items-center max-w-[80%]">
+                <h1 className="font-caveat text-center text-5xl bold">
+                  {cp.name}
                 </h1>
-                <div className="cursor-pointer hover:bg-[#c6c6c6] bg-[#d6d6d6] rounded-full p-20 mb-2">
-                  <img
-                    src="/add.svg"
-                    alt="Description of image"
-                    className="scale-[3]"
-                  />
-                </div>
               </div>
             </div>
-            <form className="flex flex-col px-3 w-[350px]">
-              <label className="font-bold mb-1">Name of the Checkpoint:</label>
-              <div className="text-4xl mb-2 font-caveat break-words">
-                {cp.name}
-              </div>
-              <label className="text-md mb-1">Checkpoint info</label>
-              <Quill
-                className="h-fit w-[350px] pr-6 mb-4"
-                readOnly={true}
-                modules={{ toolbar: false }}
-                value={cp.description}
-              ></Quill>
-            </form>
+            <Quill
+              readOnly={true}
+              modules={{ toolbar: false }}
+              style={{
+                maxHeight: !expanded? "fit-content" : "450px",
+                overflowY: "auto",
+                margin: "20px",
+              }}
+              value={cp.description}
+            ></Quill>
+            <button
+              className="flex justify-center mx-auto mb-5 sticky bottom-2"
+              onClick={() => {
+                setExpandedToggle(!expanded);
+              }}
+            >
+              {!expanded ? (
+                <img
+                  src="/arrow.svg"
+                  alt="Description of image"
+                  className="cursor-pointer scale-[1] p-2"
+                />
+              ) : (
+                <img
+                  src="/arrow.svg"
+                  alt="Description of image"
+                  className="rotate-180 cursor-pointer scale-[1] p-2"
+                />
+              )}
+            </button>
           </div>
         </Popup>
       </Marker>
@@ -235,30 +245,28 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
 
   return (
     <>
-      {hunts.map((hunt, index) => (
-        <div key={index}>{hunt.toggleCheckpoints && renderCheckpoints(hunt)}</div>
-      ))}
-      <MarkerClusterGroup>
-        {hunts.map((hunt, index) =>
-          hunt.checkpoints[0] ? (
-            <div key={index}>
+      {selected && renderCheckpoints(selected)}
+      <MarkerClusterGroup spiderfyOnMaxZoom={false} showCoverageOnHover={false}>
+        {hunts.map((hunt) =>
+          ( selected === null || selected && selected.id === hunt.id ) ? (
+            <div key={hunt.id}>
               <Marker
                 maxClusteRadius={100}
-                key={index}
-                position={hunt.checkpoints[0].position}
+                key={hunt.id}
+                position={hunt.checkpoints[0].marker.position}
                 icon={createHuntIcon(hunt)}
                 draggable={false}
                 eventHandlers={{
-                  click: () => {
-                    handleToggleDetails(hunt);
-                    console.log("Marker clicked!");
+                  click: (e) => {
+                    if (e.target.getPopup().isOpen()) e.target.openPopup();
+                    else e.target.closePopup();
                   },
                 }}
               >
-                <Popup offset={[0, 20]} maxWidth={600}>
+                <Popup offset={[0, -140]} autoClose={false} maxWidth={600}>
                   <div
-                    className={`overflow-auto h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
-                      hunt.expand ? "h-auto" : "max-h-[380px]"
+                    className={`overflow-auto w-[600px] h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
+                      expanded ? "h-auto" : "max-h-[380px]"
                     }`}
                   >
                     <div className="flex flex-col justify-center items-center mb-4">
@@ -286,7 +294,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
                       readOnly={true}
                       modules={{ toolbar: false }}
                       style={{
-                        maxHeight: !hunt.expand ? "fit-content" : "450px",
+                        maxHeight: expanded ? "fit-content" : "450px",
                         overflowY: "auto",
                         margin: "20px",
                       }}
@@ -303,23 +311,35 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
                       <button
                         onClick={() => {
                           map.closePopup();
-                          handleToggleCheckpoints(hunt);
+                          if (selected == null) {
+                            setSelectedHunt(hunt);
+                            fetchSelectedHunt(hunt);
+                            map.fitBounds(
+                              hunt.checkpoints.map(
+                                (checkpoint) => checkpoint.marker.position
+                              )
+                            );
+                          }
+                          else{
+                            setSelectedHunt(null);
+                            fetchSelectedHunt(null);
+                          }
                         }}
                         className="font-bold bg-transparent border-2 text-sm border-black 
-                  text-black rounded-xl p-2 hover:bg-green-600
-                  hover:border-green-600 hover:text-white 
-                  transition duration-300 w-full px-20 mt-5 mb-5"
+                        text-black rounded-xl p-2 hover:bg-green-600
+                        hover:border-green-600 hover:text-white 
+                        transition duration-300 w-full px-20 mt-5 mb-5"
                       >
-                        {hunt.toggleCheckpoints ? "Hide" : "View"} Checkpoints
+                        {selected === hunt ? "Hide" : "Show"} Checkpoints
                       </button>
                     </div>
                     <button
                       className="flex justify-center mx-auto mb-5 sticky bottom-2"
                       onClick={() => {
-                        handleExpandToggle(hunt);
+                        setExpandedToggle(!expanded);
                       }}
                     >
-                      {!hunt.expand ? (
+                      {!expanded ? (
                         <img
                           src="/arrow.svg"
                           alt="Description of image"
@@ -347,6 +367,8 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts }) => {
 const CreateEventsHandler = ({ checkpoints, fetchCheckpoints, focus }) => {
   const map = useMap();
 
+  const [expanded, setExpandedToggle] = useState(false);
+
   const createCustomIcon = (number) =>
     L.divIcon({
       className: "custom-div-icon",
@@ -368,6 +390,10 @@ const CreateEventsHandler = ({ checkpoints, fetchCheckpoints, focus }) => {
     map.closePopup();
     centerMap(focus[0], focus[1], 19);
   }, [focus]);
+
+  useEffect(() => {
+    Checkpoint.order = checkpoints.length + 1;
+  }, [checkpoints]);
 
   useMapEvents({
     dblclick: (e) => {
@@ -391,48 +417,71 @@ const CreateEventsHandler = ({ checkpoints, fetchCheckpoints, focus }) => {
 
   return (
     <>
-      {checkpoints.map((checkpoint, index) => (
+      {checkpoints.map((cp, index) => (
         <Marker
           key={index}
-          position={checkpoint.marker.position}
-          icon={createCustomIcon(checkpoints[index].order)}
-          draggable={false}
+          position={cp.marker.position}
+          icon={createCustomIcon(cp.order)}
+          draggable={true}
           eventHandlers={{
             dragend: (e) => handleMarkerDragEnd(index, e),
           }}
         >
           <Popup offset={[0, -40]} maxWidth={600}>
-            <div className="flex items-center justify-center flex-col mb-2 mt-4 h-fit rounded-2xl bg-[#e6e6e6] m-auto px-4 pt-4">
-              <div className="overflow-auto mb-5 w-[300px] justify-center items-center">
-                <div className="flex flex-col justify-center items-center">
-                  <h1 className="font-bold text-3xl font-caveat text-center px-6 mb-6">
-                    Checkpoint Preview
-                  </h1>
-                  <div className="cursor-pointer hover:bg-[#c6c6c6] bg-[#d6d6d6] rounded-full p-20 mb-2">
-                    <img
-                      src="/add.svg"
-                      alt="Description of image"
-                      className="scale-[3]"
-                    />
-                  </div>
-                </div>
+            <div
+            className={`overflow-auto w-[600px] h-[380px] rounded-2xl bg-[#e6e6e6] px-2 pt-6 ${
+              expanded ? "h-auto" : "max-h-[380px]"
+            }`}
+          >
+            <div className="flex flex-col justify-center items-center mb-4">
+              <h1 className="font-caveat font-bold text-3xl text-left px-6 mb-6">
+                Details of the Checkpoint
+              </h1>
+              <div className="cursor-pointer hover:bg-[#b6b6b6] bg-[#d6d6d6] rounded-full p-20 mb-2">
+                <img
+                  src="/add.svg"
+                  alt="Description of image"
+                  className="scale-[3]"
+                />
               </div>
-              <form className="flex flex-col px-3 w-[350px]">
-                <label className="font-bold mb-1">
-                  Name of the Checkpoint:
-                </label>
-                <div className="text-4xl mb-2 font-caveat break-words">
-                  {checkpoint.place}
-                </div>
-                <label className="text-md mb-1">Checkpoint info</label>
-                <Quill
-                  className="h-[200px] w-[350px] pr-6 mb-4"
-                  readOnly={true}
-                  modules={{ toolbar: false }}
-                  value={checkpoints[index].describe}
-                ></Quill>
-              </form>
+              <p className="text-xs mb-2">Click to add a banner!</p>
+              <div className="flex flex-col items-center max-w-[80%]">
+                <h1 className="font-caveat text-center text-5xl bold">
+                  {cp.name}
+                </h1>
+              </div>
             </div>
+            <Quill
+              readOnly={true}
+              modules={{ toolbar: false }}
+              style={{
+                maxHeight: !expanded? "fit-content" : "450px",
+                overflowY: "auto",
+                margin: "20px",
+              }}
+              value={cp.description}
+            ></Quill>
+            <button
+              className="flex justify-center mx-auto mb-5 sticky bottom-2"
+              onClick={() => {
+                setExpandedToggle(!expanded);
+              }}
+            >
+              {!expanded ? (
+                <img
+                  src="/arrow.svg"
+                  alt="Description of image"
+                  className="cursor-pointer scale-[1] p-2"
+                />
+              ) : (
+                <img
+                  src="/arrow.svg"
+                  alt="Description of image"
+                  className="rotate-180 cursor-pointer scale-[1] p-2"
+                />
+              )}
+            </button>
+          </div>
           </Popup>
         </Marker>
       ))}
@@ -447,6 +496,8 @@ const Map = ({
   mode,
   hunts,
   fetchHunts,
+  selectedHunt,
+  fetchSelectedHunt
 }) => (
   <MapContainer
     doubleClickZoom={false}
@@ -480,6 +531,8 @@ const Map = ({
         focus={focus}
         hunts={hunts}
         fetchHunts={fetchHunts}
+        selectedHunt={selectedHunt}
+        fetchSelectedHunt={fetchSelectedHunt}
       />
     )}
 
@@ -490,6 +543,7 @@ const Map = ({
         focus={focus}
       />
     )}
+
   </MapContainer>
 );
 

@@ -4,16 +4,17 @@ import Quill from "react-quill";
 
 const CheckpointInfo = ({ checkpoint, setFocus, index, updateCheckpoints, removeCheckpoints }) => {
   const [placeEdit, setPlaceEdit] = useState(checkpoint.tempPlace);
-  const [describe, setDescribe] = useState(checkpoint.tempDescribe);
+  const [description, setDescribe] = useState(checkpoint.tempDescribe);
 
   const modifyInfo = (e) => {
     e.preventDefault();
     const copy = checkpoint;
-    copy.place = placeEdit;
-    copy.describe = describe;
+    copy.name = placeEdit;
+    copy.description = description;
     copy.tempPlace = placeEdit;
-    copy.tempDescribe = describe;
+    copy.tempDescribe = description;
     copy.editing = !copy.editing;
+    console.log(copy)
     updateCheckpoints(copy, index);
   };
 
@@ -24,12 +25,13 @@ const CheckpointInfo = ({ checkpoint, setFocus, index, updateCheckpoints, remove
     updateCheckpoints(copy, index);
   };
 
-
   useEffect(() => {
     const copy = checkpoint;
     copy.tempPlace = placeEdit;
-    copy.tempDescribe = describe;
-  }, [placeEdit, describe]);
+    copy.tempDescribe = description;
+    console.log(copy)
+
+  }, [placeEdit, description]);
 
   const forma = (
     <form className="flex flex-col px-3 w-full">
@@ -45,7 +47,7 @@ const CheckpointInfo = ({ checkpoint, setFocus, index, updateCheckpoints, remove
         <label className="text-md mb-1">Checkpoint info</label>
         <Quill
           key={index}
-          value={describe}
+          value={description}
           onChange={setDescribe}
           style={{ height: "125px" }}
         />

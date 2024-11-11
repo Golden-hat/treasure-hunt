@@ -3,8 +3,10 @@ import dynamic from 'next/dynamic';
 import Create from '../../../components/create'
 import Right_draw from '../../../components/menu_right'
 import Browse from '../../../components/browse'
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import React from 'react';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // Dynamically load the Map component to avoid SSR issues
 const Map = dynamic(() => import('../../../components/map'), {
@@ -19,6 +21,31 @@ export default function Home() {
   const [focus, setFocus] = useState([39.42858790570836,-0.41886180536852896])
   const [mode, setMode] = useState(0)
   const [hunts, setHunts] = useState([])
+  const [selectedHunt, setSelectedHunt] = useState(null)
+
+  const router = useRouter();
+  
+  useEffect(() => {
+    const fetch_session = async () => {
+      const res = await fetch('/api/session', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      const data = await res.json();
+
+      if (data.auth == true) {
+        setUsername(data.user.username)
+      }
+      else {
+        alert("You're not logged in yet. You should first log in. If you don't have an account yet, please sign up.")
+        router.push("../login")
+      }
+    };
+
+    fetch_session();
+  }, []);
 
   const fetchCheckpoints = (childData) => {
     setCheckpoints(childData);
@@ -28,6 +55,10 @@ export default function Home() {
     console.log(childData)
     setHunts(childData);
   };
+
+  const fetchSelectedHunt = (childData) => {
+    setSelectedHunt(childData);
+  }
 
   {/* MENU CONTENT */ }
   const paperProps = {
@@ -117,7 +148,16 @@ export default function Home() {
   return (
     <div className="flex relative overflow-hidden h-screen">
       <div className="flex-1 overflow-hidden z-0">
-        <Map checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} focus={focus} mode={mode} hunts={hunts} fetchHunts={fetchHunts}/>
+        <Map
+          checkpoints={checkpoints}
+          fetchCheckpoints={fetchCheckpoints}
+          focus={focus}
+          mode={mode}
+          selectedHunt={selectedHunt}
+          fetchSelectedHunt={fetchSelectedHunt}
+          hunts={hunts}
+          fetchHunts={fetchHunts}
+        />
       </div>
 
       <div className="flex flex-col w-[600px] relative top-0 left-0 h-full bg-[#eeffe0] z-1">
@@ -138,7 +178,7 @@ export default function Home() {
         <Right_draw paperProps={paperProps} open={open} setOpen={setOpen} content={content}></Right_draw>
 
         {/* HOME */}
-        {mode === 0 && <Browse setFocus={setFocus} username={username} hunts={hunts} fetchHunts={fetchHunts}/>}
+        {mode === 0 && <Browse setFocus={setFocus} username={username} hunts={hunts} fetchHunts={fetchHunts} selectedHunt={selectedHunt} fetchSelectedHunt={fetchSelectedHunt}/>}
 
         {/* CREATE */}
         {mode === 1 && <Create setFocus={setFocus} username={username} checkpoints={checkpoints} fetchCheckpoints={fetchCheckpoints} />}

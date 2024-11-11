@@ -67,12 +67,12 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                name: element.place,
+                name: element.name,
                 hunt: data.id,
                 order: element.order,
                 position_lat: element.marker.position[0],
                 position_lng: element.marker.position[1],
-                description: element.describe,
+                description: element.description,
                 image: element.image,
               }),
             });
@@ -172,8 +172,8 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
                   }
                 });
             
+                newCheckpoints.order--;
                 fetchCheckpoints(newCheckpoints);
-                checkpoints.order--;
               }
             }
           />
@@ -212,8 +212,8 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
               const copyList = [...checkpoints];
               copyList.forEach((element) => {
                 element.editing = false;
-                element.tempPlace = element.place;
-                element.tempDescribe = element.describe;
+                element.tempPlace = element.name;
+                element.tempDescribe = element.description;
               });
               fetchCheckpoints(copyList);
             }}
@@ -223,17 +223,11 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
           >
             Collapse All
           </button>
-          {!true ? (
-            <h1 className="pr-4 text-green-600, text-sm text-center">
-              Details open. Dragging, creating and deleting points is disabled{" "}
-            </h1>
-          ) : (
-            <div className="pr-4 text-green-600, text-sm text-center">
-              Click on an arrow to change details of the checkpoints
-            </div>
-          )}
+          <div className="pr-4 text-green-600, text-sm text-center">
+            Click on an arrow to change details of the checkpoints
+          </div>
           <div className="mt-4 flex flex-col overflow-y-auto h-[70vh] max-h-screen">
-            <div className="pr-4">
+            <div className="">
               <DndContext
                 collisionDetection={closestCenter}
                 onDragEnd={handleDragEnd}
@@ -556,8 +550,8 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
           setOpen={setOpen}
           content={content}
           auxFunction={() => checkpoints.forEach(element => {
-            element.tempDescribe = element.describe;
-            element.tempPlace = element.place;
+            element.tempDescribe = element.description;
+            element.tempPlace = element.name;
           })}
         ></Drawer>
       }

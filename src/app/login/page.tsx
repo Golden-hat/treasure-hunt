@@ -52,7 +52,7 @@ export default function Login() {
 
       const data = await res.json();
       if (data.result == "ok") {
-        alert("User successfully found!");
+        router.push("../home")
       }
       else if (data.result == "ko") {
         alert("It seems you haven't signed up. No such credentials found in database.");

@@ -210,7 +210,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts, selectedHunt, fetchSelec
               readOnly={true}
               modules={{ toolbar: false }}
               style={{
-                maxHeight: !expanded? "fit-content" : "450px",
+                maxHeight: "fit-content",
                 overflowY: "auto",
                 margin: "20px",
               }}
@@ -294,7 +294,7 @@ const BrowseEventHandler = ({ focus, hunts, fetchHunts, selectedHunt, fetchSelec
                       readOnly={true}
                       modules={{ toolbar: false }}
                       style={{
-                        maxHeight: expanded ? "fit-content" : "450px",
+                        maxHeight: "fit-content",
                         overflowY: "auto",
                         margin: "20px",
                       }}
@@ -455,7 +455,7 @@ const CreateEventsHandler = ({ checkpoints, fetchCheckpoints, focus }) => {
               readOnly={true}
               modules={{ toolbar: false }}
               style={{
-                maxHeight: !expanded? "fit-content" : "450px",
+                maxHeight: "fit-content",
                 overflowY: "auto",
                 margin: "20px",
               }}

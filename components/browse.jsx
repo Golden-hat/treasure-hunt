@@ -146,34 +146,33 @@ const Right = ({
         )}
       </div>
       {selectedHunt === null ? (
-        <div className="flex justify-center">
-          <img src="/no_selection.svg" alt="No checkpoints" className="w-[80%]" />
+        <div className="flex justify-center mt-4">
+          <img
+            src="/no_selection.svg"
+            alt="No checkpoints"
+            className="w-[80%]"
+          />
         </div>
       ) : (
-        <div className="">
-          <div className="mt-4 flex flex-col overflow-y-auto max-h-[50vh]">
-            <div className="">
-              <DndContext collisionDetection={closestCenter}>
-                <SortableContext
-                  items={selectedHunt.checkpoints.map((cp) => cp.order)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className="flex flex-col">
-                    {selectedHunt.checkpoints
-                      .map((checkpoint, index) => (
-                        <DraggableCheckpoint
-                          disabled
-                          index={index}
-                          key={index}
-                          id={checkpoint.id}
-                          checkpoints={selectedHunt.checkpoints}
-                        />
-                      ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
-          </div>
+        <div className="mt-4 flex flex-col">
+          <DndContext collisionDetection={closestCenter}>
+            <SortableContext
+              items={selectedHunt.checkpoints.map((cp) => cp.order)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="flex flex-col">
+                {selectedHunt.checkpoints.map((checkpoint, index) => (
+                  <DraggableCheckpoint
+                    disabled
+                    index={index}
+                    key={index}
+                    id={checkpoint.id}
+                    checkpoints={selectedHunt.checkpoints}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         </div>
       )}
     </>

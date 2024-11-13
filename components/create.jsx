@@ -226,8 +226,7 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
           <div className="pr-4 text-green-600, text-sm text-center">
             Click on an arrow to change details of the checkpoints
           </div>
-          <div className="mt-4 flex flex-col overflow-y-auto h-[70vh] max-h-screen">
-            <div className="">
+          <div className="mt-4 flex flex-col overflow-y-auto h-[80vh] max-h-screen">
               <DndContext
                 collisionDetection={closestCenter}
                 onDragEnd={handleDragEnd}
@@ -250,7 +249,6 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
                 </SortableContext>
               </DndContext>
             </div>
-          </div>
         </div>
       )}
     </>
@@ -365,7 +363,7 @@ const Right = ({ setFocus, username, checkpoints, fetchCheckpoints }) => {
             <Quill
               value={editorContent}
               onChange={setEditorContent}
-              style={{ height: "125px" }}
+              style={{ height: "200px" }}
             />
             <label className="mt-16 text-lg">
               Difficulty: <span className="font-bold">{difficulty}</span>

@@ -24,7 +24,6 @@ const CheckpointInfo = ({ checkpoint, index, setFocus }) => {
           modules={{ toolbar: false }}
           value={description}
           readOnly={true}
-          style={{ height: "200px" }}
         />
       </div>
     </form>
